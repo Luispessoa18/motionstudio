@@ -1,0 +1,102 @@
+{
+  "id": "imobiliario",
+  "name": "Incorporação e terrenos",
+  "description": "Para incorporadores, construtoras e investidores: terrenos, viabilidade, VGV, loteamentos, proptechs.",
+  "keywords": [
+    "terreno",
+    "lote",
+    "incorpora",
+    "imóve",
+    "imovel",
+    "imóvel",
+    "constru",
+    "zoneamento",
+    "vgv",
+    "empreendimento",
+    "apartamento",
+    "condomínio",
+    "condominio",
+    "corretor",
+    "aluguel",
+    "m²",
+    "metro quadrado",
+    "obra",
+    "loteamento",
+    "viabilidade",
+    "proptech",
+    "planta"
+  ],
+  "font": "wide",
+  "particles": "dash",
+  "heroes": {
+    "lote": {
+      "desc": "Terreno visto de cima que gira para 3D e vira prédio. Use em 2 a 4 cenas seguidas, avançando os estados em ordem.",
+      "states": {
+        "planta": "lote desenhado em vista de cima no meio da quadra (apresentar o terreno)",
+        "iso": "câmera gira para perspectiva 3D",
+        "recuos": "mostra recuos e até 4 cartões de parâmetros (use items: zona, coeficiente, recuos, taxa de ocupação, permeabilidade)",
+        "predio": "andares sobem um por um (value = número de pavimentos, ex. \"12\")",
+        "vgv": "prédio acende e aparece o valor (value = VGV ou preço, label = rótulo)"
+      },
+      "fields": "label: nome da rua (só no estado planta); items: parâmetros (recuos); value: pavimentos (predio) ou valor (vgv)"
+    },
+    "mapa": {
+      "desc": "Mapa de cidade com pin, raio de alcance e pontos de interesse. Bom para localização, demanda e região.",
+      "states": {
+        "cidade": "ruas se desenham",
+        "pin": "pin cai sobre o terreno (label = nome do local)",
+        "raio": "anéis de alcance (value = distância, ex. \"2 km\")",
+        "pois": "pontos de interesse ao redor (items com label e value opcional, ex. metrô 400 m)"
+      },
+      "fields": "label: nome do local; value: raio; items: pontos de interesse"
+    }
+  },
+  "metaphors": [
+    "Mostrar o terreno vazio antes de falar do potencial dele",
+    "Fazer o prédio crescer na cena que fala de potencial construtivo",
+    "Usar o mapa quando o argumento for localização ou demanda da região",
+    "Fechar a parte técnica com checklist ou veredito (segurança jurídica, dossiê pronto)"
+  ],
+  "notes": "Público é técnico (incorporador, construtor, investidor). Fale em lote, potencial construtivo, VGV, viabilidade. Evite clichês de corretor (\"o lar dos seus sonhos\").",
+  "order": 2,
+  "icon": "solar:buildings-3-bold-duotone",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "local",
+        "label": "Cidade / região do terreno ou da operação",
+        "ph": "Ex.: Zona Oeste de SP"
+      },
+      {
+        "id": "produto",
+        "label": "O que a empresa entrega",
+        "ph": "Ex.: estudo de viabilidade em 48h"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: incorporadores de médio porte"
+      },
+      {
+        "id": "prova",
+        "label": "Números ou provas (só reais)",
+        "ph": "Ex.: 120 terrenos analisados"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos de terrenos, obras, plantas, mapas ou telas do sistema.",
+      "slots": [
+        "Terreno / vista aérea",
+        "Obra",
+        "Planta / implantação",
+        "Tela do sistema"
+      ]
+    },
+    "photo_hint": "vista aérea da cidade/região citada, terrenos, canteiro de obras"
+  },
+  "style_defaults": {
+    "theme": "dark",
+    "skin": "premium",
+    "font": "wide"
+  }
+}

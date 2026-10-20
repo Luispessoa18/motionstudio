@@ -1,0 +1,106 @@
+{
+  "id": "saas",
+  "name": "Tecnologia / SaaS / App",
+  "description": "Aplicativos, plataformas, software B2B e B2C, ferramentas de produtividade.",
+  "keywords": [
+    "app",
+    "aplicativo",
+    "plataforma",
+    "software",
+    "saas",
+    "dashboard",
+    "painel",
+    "usuário",
+    "usuario",
+    "cliente",
+    "automação",
+    "automacao",
+    "integração",
+    "integracao",
+    "assinatura",
+    "notificação",
+    "agendamento",
+    "gestão",
+    "gestao",
+    "produtividade",
+    "crm",
+    "erp"
+  ],
+  "font": "clean",
+  "particles": "dash",
+  "heroes": {
+    "celular": {
+      "desc": "Celular com telas do app que trocam entre cenas. Use para mostrar a experiência do usuário passo a passo.",
+      "states": {
+        "inicio": "tela inicial (title = nome do app, value = saudação ou frase grande, items = até 4 atalhos)",
+        "lista": "lista de itens (items com label, sub e value: tarefas, pedidos, agenda)",
+        "grafico": "tela com número grande e gráfico subindo (label = rótulo, value = número)",
+        "notificacao": "notificação cai do topo (title = remetente, note = mensagem)"
+      },
+      "fields": "title, value, label, note, items"
+    },
+    "painel": {
+      "desc": "Dashboard web que começa vazio e se preenche. Bom para gestão, métricas e visão do gestor.",
+      "states": {
+        "vazio": "esqueleto carregando",
+        "kpis": "até 3 indicadores (items com label e value)",
+        "grafico": "gráfico de crescimento (label = rótulo do gráfico)",
+        "destaque": "etiqueta no pico do gráfico (note = texto da etiqueta)"
+      },
+      "fields": "title (nome do painel, só na primeira cena), items, label, note"
+    }
+  },
+  "metaphors": [
+    "Começar pela dor do dia a dia (chat, feed caótico) e só depois mostrar o app",
+    "Mostrar a jornada no celular em 2 a 3 telas seguidas",
+    "Usar o painel para o ponto de vista do gestor ou do resultado",
+    "Notificação como momento de alívio (\"tudo resolvido sozinho\")"
+  ],
+  "notes": "Fale do benefício para quem usa, não da tecnologia. Headlines curtas e humanas.",
+  "order": 3,
+  "icon": "solar:smartphone-2-bold-duotone",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "problema",
+        "label": "Que problema resolve",
+        "ph": "Ex.: agendas lotadas de faltas"
+      },
+      {
+        "id": "recursos",
+        "label": "3 recursos principais",
+        "ph": "Ex.: lembrete automático, pagamento, painel"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: clínicas e salões"
+      },
+      {
+        "id": "prova",
+        "label": "Resultados ou números (só reais)",
+        "ph": "Ex.: -40% de faltas"
+      },
+      {
+        "id": "plataforma",
+        "label": "Onde funciona",
+        "ph": "Ex.: app iOS/Android e web"
+      }
+    ],
+    "assets": {
+      "hint": "Prints de tela do app/sistema e fotos do produto em uso.",
+      "slots": [
+        "Tela principal",
+        "Tela de recurso",
+        "Produto em uso"
+      ]
+    },
+    "photo_hint": "pessoas usando celular/computador no contexto do cliente"
+  },
+  "style_defaults": {
+    "theme": "dark",
+    "skin": "premium",
+    "font": "clean",
+    "deco": "rings"
+  }
+}

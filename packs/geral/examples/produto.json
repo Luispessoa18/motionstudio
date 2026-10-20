@@ -1,0 +1,6 @@
+{"font":"grotesk","particles":"dash","tagline":"Seus dados, finalmente juntos.","scenes":[
+{"headline":"Planilhas não escalam.","caption":"Cada área tem a sua versão da verdade.","ui":{"type":"feed","title":"Caixa de entrada","label":"Hoje","lines":["planilha_final_v3.xlsx | enviado","planilha_final_v4.xlsx | enviado","RE: números do mês | 12 respostas","consolidado_OK.xlsx | conflito","fechamento_revisado.xlsx | enviado","RE: RE: qual vale? | sem resposta"]}},
+{"headline":"Tudo num só fluxo.","caption":"Conecte as fontes uma vez e esqueça a consolidação manual.","ui":{"type":"flow","nodes":[{"title":"ERP","sub":"financeiro"},{"title":"Produto","sub":"consolida"},{"title":"Painel","sub":"decisão"}],"highlight":1,"label":"sync"}},
+{"headline":"Antes e depois.","ui":{"type":"table","columns":["Tarefa","Antes","Agora"],"rows":[["Fechamento do mês","5 dias","!1 dia"],["Versões da planilha","várias","!uma"],["Conferência manual","sempre","!nunca"]]}},
+{"headline":"Pronto para decidir.","ui":{"type":"checklist","title":"Seu time ganha","items":[{"label":"Uma fonte da verdade"},{"label":"Relatórios automáticos"},{"label":"Tempo para analisar"}]}}
+]}

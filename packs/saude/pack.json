@@ -1,0 +1,72 @@
+{
+  "id": "saude",
+  "name": "Saúde e bem-estar",
+  "order": 6,
+  "icon": "solar:health-bold-duotone",
+  "description": "Clínicas, consultórios, academias, estética, planos e apps de saúde.",
+  "keywords": [
+    "clínica",
+    "clinica",
+    "saúde",
+    "saude",
+    "médic",
+    "odonto",
+    "dentista",
+    "estética",
+    "estetica",
+    "academia",
+    "bem-estar",
+    "consulta",
+    "paciente",
+    "tratamento",
+    "fisioterapia",
+    "nutri"
+  ],
+  "font": "geometric",
+  "particles": "dash",
+  "metaphors": [
+    "Começar pela pessoa e pelo cuidado, não pelo equipamento",
+    "Mostrar o espaço e a equipe com as fotos enviadas",
+    "Benefícios como checklist curto; agendamento como chamada final"
+  ],
+  "notes": "Tom humano, acolhedor e confiável. Nunca prometa cura nem resultados que não estão no pitch.",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "servicos",
+        "label": "Serviços principais",
+        "ph": "Ex.: implantes, clareamento, ortodontia"
+      },
+      {
+        "id": "local",
+        "label": "Cidade / bairro",
+        "ph": "Ex.: Barra da Tijuca"
+      },
+      {
+        "id": "diferencial",
+        "label": "Diferenciais",
+        "ph": "Ex.: atendimento aos sábados"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: famílias"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos do espaço, da equipe e dos atendimentos.",
+      "slots": [
+        "Recepção / espaço",
+        "Equipe",
+        "Atendimento"
+      ]
+    },
+    "photo_hint": "pessoas saudáveis e sorrindo, cuidado, ambiente clínico claro"
+  },
+  "style_defaults": {
+    "theme": "light",
+    "skin": "premium",
+    "font": "soft",
+    "deco": "waves"
+  }
+}

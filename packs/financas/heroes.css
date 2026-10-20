@@ -1,0 +1,17 @@
+.hf{position:absolute;inset:0}
+.hf svg{position:absolute;left:0;top:0;overflow:visible}
+.hf-dot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px var(--acc)}
+.hf-head{position:absolute;left:20px;top:10px;right:20px;height:120px}
+.hf-h{position:absolute;left:0;top:0}
+.hf-v{font-size:72px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:6px;white-space:nowrap}
+.hf-tag{position:absolute;font-size:17px;padding:8px 14px;white-space:nowrap}
+.hw{position:absolute;inset:0}
+.hw svg{position:absolute;left:0;top:0;overflow:visible}
+.hw-c{position:absolute;transform:translate(-50%,-50%);text-align:center}
+.hw-v{font-size:40px;font-weight:800;letter-spacing:-.03em;margin-top:4px;white-space:nowrap}
+.hw-leg{position:absolute;top:50%;transform:translateY(-50%);right:0;display:flex;flex-direction:column;gap:14px}
+.hw-row{display:flex;align-items:center;gap:12px;font-size:20px}
+.hw-row i{width:16px;height:16px;border-radius:4px;flex:none}
+.hw-row span{flex:1}
+.hw-row b{font-size:20px}
+.hw-note{position:relative;align-self:flex-start;margin-top:10px;font-size:17px;white-space:normal;max-width:240px;line-height:1.3}

@@ -1,0 +1,8 @@
+{"font":"clean","particles":"dash","tagline":"Sua agenda cheia, sem esforço.","scenes":[
+{"headline":"Sua recepção vive no telefone.","caption":"Remarcações, faltas e mensagens o dia inteiro.","ui":{"type":"chat","title":"WhatsApp da clínica","messages":[{"role":"user","text":"Oi, consigo remarcar para quinta?"},{"role":"user","text":"Vou me atrasar 20 min 😕"},{"role":"user","text":"Não vou conseguir ir hoje.","highlight":true}],"note":"Mais um horário vazio"}},
+{"headline":"Agora a agenda se organiza sozinha.","ui":{"type":"hero","hero":"celular","state":"inicio","title":"Agenda.ai","value":"Bom dia, Dra. Lia","items":[{"label":"Hoje","value":"14"},{"label":"Confirmadas","value":"12"},{"label":"Encaixes"},{"label":"Pacientes"}]}},
+{"headline":"Cada horário confirmado.","caption":"Lembretes automáticos e confirmação em um toque.","ui":{"type":"hero","hero":"celular","state":"lista","items":[{"label":"Ana Souza","sub":"Retorno","value":"09:00"},{"label":"Bruno Lima","sub":"Primeira consulta","value":"10:30"},{"label":"Carla Dias","sub":"Exame","value":"14:00"},{"label":"Diego Alves","sub":"Retorno","value":"15:30"}]}},
+{"headline":"Falta vira encaixe.","ui":{"type":"hero","hero":"celular","state":"notificacao","title":"Agenda.ai","note":"Horário das 15h liberado e preenchido pela lista de espera."}},
+{"headline":"E você enxerga o mês inteiro.","ui":{"type":"hero","hero":"painel","state":"kpis","title":"Agenda.ai · Clínica","items":[{"label":"Consultas","value":"312"},{"label":"Faltas","value":"4%"},{"label":"Encaixes","value":"38"}]}},
+{"headline":"Crescimento previsível.","ui":{"type":"hero","hero":"painel","state":"destaque","label":"Consultas por semana","note":"Melhor mês do ano"}}
+]}

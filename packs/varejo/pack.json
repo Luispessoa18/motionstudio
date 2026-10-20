@@ -1,0 +1,68 @@
+{
+  "id": "varejo",
+  "name": "Varejo e produtos",
+  "order": 7,
+  "icon": "solar:bag-heart-bold-duotone",
+  "description": "Lojas, e-commerce, marcas de produto, lançamentos e promoções.",
+  "keywords": [
+    "loja",
+    "produto",
+    "coleção",
+    "colecao",
+    "promoção",
+    "promocao",
+    "desconto",
+    "frete",
+    "e-commerce",
+    "compre",
+    "oferta",
+    "moda"
+  ],
+  "font": "geometric",
+  "particles": "dash",
+  "metaphors": [
+    "Produto como herói: fotos enviadas em destaque, uma por cena",
+    "Oferta ou benefício em número grande (counter) só se estiver no pitch",
+    "Chamada final direta (compre, link na bio)"
+  ],
+  "notes": "Tom direto, enérgico e desejável. Frases curtas. Stickers combinam bem.",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "produto",
+        "label": "Produto / coleção",
+        "ph": "Ex.: tênis de corrida linha Aero"
+      },
+      {
+        "id": "oferta",
+        "label": "Oferta ou condição",
+        "ph": "Ex.: 20% off no lançamento"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: corredores iniciantes"
+      },
+      {
+        "id": "onde",
+        "label": "Onde comprar",
+        "ph": "Ex.: site e lojas físicas"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos do produto (fundo limpo é ótimo), lifestyle e embalagem.",
+      "slots": [
+        "Produto",
+        "Produto em uso",
+        "Detalhe / embalagem"
+      ]
+    },
+    "photo_hint": "pessoas usando o produto, lifestyle"
+  },
+  "style_defaults": {
+    "theme": "brand",
+    "skin": "premium",
+    "font": "geometric",
+    "deco": "shapes"
+  }
+}

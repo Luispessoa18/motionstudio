@@ -1,0 +1,69 @@
+{
+  "id": "gastronomia",
+  "name": "Gastronomia",
+  "order": 8.5,
+  "icon": "solar:chef-hat-heart-bold-duotone",
+  "description": "Restaurantes, bares, cafés, delivery e marcas de alimentos.",
+  "keywords": [
+    "restaurante",
+    "cardápio",
+    "cardapio",
+    "prato",
+    "chef",
+    "delivery",
+    "café",
+    "bar",
+    "hamburguer",
+    "pizza",
+    "comida",
+    "sabor",
+    "gastronomia"
+  ],
+  "font": "geometric",
+  "particles": "dash",
+  "metaphors": [
+    "Comida em close com as fotos enviadas, uma por cena",
+    "Ambiente e experiência",
+    "Chamada final com endereço ou delivery"
+  ],
+  "notes": "Tom sensorial e apetitoso, frases curtas.",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "especialidade",
+        "label": "Especialidade",
+        "ph": "Ex.: massas artesanais"
+      },
+      {
+        "id": "local",
+        "label": "Endereço / bairro",
+        "ph": "Ex.: Pinheiros, SP"
+      },
+      {
+        "id": "diferencial",
+        "label": "Diferenciais",
+        "ph": "Ex.: forno a lenha, música ao vivo"
+      },
+      {
+        "id": "pedido",
+        "label": "Como pedir / reservar",
+        "ph": "Ex.: iFood e reservas pelo WhatsApp"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos dos pratos, do ambiente e da equipe.",
+      "slots": [
+        "Prato",
+        "Ambiente",
+        "Chef / equipe"
+      ]
+    },
+    "photo_hint": "comida em close, ambiente aconchegante de restaurante"
+  },
+  "style_defaults": {
+    "theme": "dark",
+    "skin": "premium",
+    "font": "elegant",
+    "deco": "orbs"
+  }
+}

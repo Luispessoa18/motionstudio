@@ -1,0 +1,8 @@
+{"font":"geometric","particles":"dash","tagline":"Investir com direção.","scenes":[
+{"headline":"Todo patrimônio tem uma história.","ui":{"type":"hero","hero":"grafico","state":"historico","title":"Patrimônio"}},
+{"headline":"Até o mercado virar.","caption":"Quem investe sem estratégia sente cada queda.","ui":{"type":"hero","hero":"grafico","state":"queda","label":"crise"}},
+{"headline":"Com estratégia, a queda vira *oportunidade.*","ui":{"type":"hero","hero":"grafico","state":"virada","label":"rebalanceamento"}},
+{"headline":"E você chega onde planejou.","ui":{"type":"hero","hero":"grafico","state":"meta","title":"Meta atingida","value":"R$ 1.000.000","label":"meta"}},
+{"headline":"Uma carteira feita para você.","caption":"Montada pelo seu perfil, revisada todo mês.","ui":{"type":"hero","hero":"carteira","state":"composicao","label":"Patrimônio","value":"R$ 250.000","items":[{"label":"Renda fixa","value":"45%"},{"label":"Ações","value":"30%"},{"label":"Exterior","value":"15%"},{"label":"Reserva","value":"10%"}]}},
+{"headline":"Proteção onde importa.","ui":{"type":"hero","hero":"carteira","state":"destaque","highlight":0,"note":"Liquidez diária para emergências"}}
+]}

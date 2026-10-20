@@ -1,0 +1,8 @@
+{"font":"wide","particles":"dash","tagline":"Veja o que realmente cabe no seu terreno.","scenes":[
+{"headline":"Todo terreno esconde um *valor.*","caption":"Matrícula, área e geometria do lote reunidas num só lugar.","ui":{"type":"hero","hero":"lote","state":"planta","label":"AV. PRINCIPAL"}},
+{"headline":"Zoneamento lido em segundos.","caption":"Os parâmetros da lei de uso do solo aplicados ao seu lote.","ui":{"type":"hero","hero":"lote","state":"recuos","items":[{"label":"Zona de uso","value":"ZC-2"},{"label":"Coef. de aproveitamento","value":"3,0","sub":"até 3.750 m²"},{"label":"Recuo frontal","value":"5,00 m"},{"label":"Permeabilidade","value":"20%"}]}},
+{"headline":"Veja o que *realmente cabe.*","caption":"Volume máximo calculado com recuos, coeficiente e gabarito.","ui":{"type":"hero","hero":"lote","state":"predio","value":"12"}},
+{"headline":"VGV antes da primeira pedra.","caption":"Receita potencial projetada com dados de mercado.","ui":{"type":"hero","hero":"lote","state":"vgv","label":"VGV estimado","value":"R$ 12.480.000"}},
+{"headline":"Localização que vende.","caption":"Demanda e serviços no raio de caminhada.","ui":{"type":"hero","hero":"mapa","state":"pois","label":"Seu terreno","value":"1 km","items":[{"label":"Metrô","value":"400 m"},{"label":"Escolas"},{"label":"Comércio"},{"label":"Parque","value":"700 m"}]}},
+{"headline":"Decida com segurança.","caption":"Análise técnica e jurídica num dossiê pronto para apresentar.","ui":{"type":"checklist","title":"Dossiê de viabilidade","items":[{"label":"Análise técnica"},{"label":"Potencial construtivo"},{"label":"Segurança jurídica"}],"stamp":"Análise técnica"}}
+]}

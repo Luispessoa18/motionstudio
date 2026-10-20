@@ -1,0 +1,84 @@
+{
+  "id": "residencial",
+  "name": "Lançamentos residenciais",
+  "order": 1,
+  "icon": "solar:home-smile-bold-duotone",
+  "description": "Casas, apartamentos e condomínios para o comprador final: lançamento, obras ou pronto para morar.",
+  "keywords": [
+    "casa",
+    "casas",
+    "suíte",
+    "suítes",
+    "condomínio",
+    "condominio",
+    "residencial",
+    "residences",
+    "apartamento",
+    "cobertura",
+    "lazer",
+    "piscina",
+    "varanda",
+    "gourmet",
+    "lançamento",
+    "morar",
+    "jardim"
+  ],
+  "font": "soft",
+  "particles": "dash",
+  "borrow_heroes": {
+    "mapa": "imobiliario"
+  },
+  "metaphors": [
+    "Abrir com a sensação de morar ali (paisagem, silêncio, natureza, vista), não com a ficha técnica",
+    "Mostrar a fachada e as áreas de lazer com as FOTOS enviadas, uma por cena, com selos curtos (3 suítes, piscina aquecida)",
+    "Usar o mapa para localização e o que há por perto",
+    "Fechar com chamada clara (agende uma visita, receba o material)"
+  ],
+  "notes": "Público é o comprador final. Tom aspiracional e acolhedor, frases curtas e sensoriais. Use as fotos do empreendimento como protagonistas. Nada de jargão de incorporador (VGV, viabilidade).",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "local",
+        "label": "Cidade / bairro / região",
+        "ph": "Ex.: Itaipava, Petrópolis (RJ)"
+      },
+      {
+        "id": "tipologia",
+        "label": "Tipologia",
+        "ph": "Ex.: casas de 3 e 4 suítes, 180 a 240 m²"
+      },
+      {
+        "id": "lazer",
+        "label": "Lazer e diferenciais",
+        "ph": "Ex.: piscina aquecida, varanda gourmet, jardim privativo, segurança 24h"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem é",
+        "ph": "Ex.: famílias que querem sair da cidade"
+      },
+      {
+        "id": "estagio",
+        "label": "Estágio e condições",
+        "ph": "Ex.: lançamento, entrada facilitada"
+      }
+    ],
+    "assets": {
+      "hint": "As fotos que vão aparecer no vídeo: fachadas, áreas de lazer, interiores, planta e vista.",
+      "slots": [
+        "Fachada",
+        "Área de lazer",
+        "Interiores",
+        "Planta",
+        "Vista / paisagem"
+      ]
+    },
+    "photo_hint": "paisagem e natureza da região citada (serra, praia, cidade), estilo de vida, família"
+  },
+  "style_defaults": {
+    "theme": "light",
+    "skin": "premium",
+    "font": "soft",
+    "deco": "orbs"
+  }
+}

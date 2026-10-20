@@ -1,0 +1,66 @@
+{
+  "id": "educacao",
+  "name": "Educação e cursos",
+  "order": 8,
+  "icon": "solar:square-academic-cap-bold-duotone",
+  "description": "Escolas, cursos, mentorias, infoprodutos e plataformas de ensino.",
+  "keywords": [
+    "curso",
+    "aula",
+    "escola",
+    "aluno",
+    "mentoria",
+    "ensino",
+    "aprenda",
+    "certificado",
+    "faculdade",
+    "treinamento"
+  ],
+  "font": "geometric",
+  "particles": "dash",
+  "metaphors": [
+    "Abrir com a transformação do aluno (antes e depois)",
+    "Módulos ou etapas com steps",
+    "Prova social e chamada para inscrição"
+  ],
+  "notes": "Tom motivador e claro, sem promessas de ganho que não estejam no pitch.",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "curso",
+        "label": "Curso / programa",
+        "ph": "Ex.: formação em UX em 12 semanas"
+      },
+      {
+        "id": "transformacao",
+        "label": "O que o aluno conquista",
+        "ph": "Ex.: primeiro emprego na área"
+      },
+      {
+        "id": "formato",
+        "label": "Formato",
+        "ph": "Ex.: online ao vivo, certificado"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: quem quer mudar de carreira"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos de aulas, professores, alunos ou telas da plataforma.",
+      "slots": [
+        "Aula / professor",
+        "Alunos",
+        "Plataforma"
+      ]
+    },
+    "photo_hint": "estudantes, aula, pessoa estudando no notebook"
+  },
+  "style_defaults": {
+    "theme": "brand",
+    "skin": "premium",
+    "font": "geometric",
+    "deco": "shapes"
+  }
+}

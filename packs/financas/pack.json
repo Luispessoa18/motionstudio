@@ -1,0 +1,99 @@
+{
+  "id": "financas",
+  "name": "Finanças / Investimentos",
+  "description": "Investimentos, crédito, bancos digitais, gestão financeira, crescimento e resultados.",
+  "keywords": [
+    "invest",
+    "carteira",
+    "patrimônio",
+    "patrimonio",
+    "rendimento",
+    "rentabilidade",
+    "crédito",
+    "credito",
+    "banco",
+    "juros",
+    "retorno",
+    "ações",
+    "acoes",
+    "renda fixa",
+    "receita",
+    "faturamento",
+    "lucro",
+    "caixa",
+    "fundo",
+    "financeir",
+    "economia",
+    "dinheiro",
+    "meta"
+  ],
+  "font": "geometric",
+  "particles": "dash",
+  "heroes": {
+    "grafico": {
+      "desc": "Linha que conta uma história: sobe, cai, vira e bate a meta. Use em 2 a 4 cenas seguidas.",
+      "states": {
+        "historico": "linha começa subindo (title = rótulo, value = número no topo)",
+        "queda": "linha despenca (label = etiqueta no ponto de queda)",
+        "virada": "linha vira e sobe forte (label = etiqueta na virada)",
+        "meta": "linha de meta aparece e o ponto final brilha (value = valor alcançado, label = etiqueta)"
+      },
+      "fields": "title, value, label"
+    },
+    "carteira": {
+      "desc": "Gráfico de rosca com a composição de uma carteira ou orçamento.",
+      "states": {
+        "composicao": "fatias se desenham (items com label e value em %, label/value = total no centro)",
+        "destaque": "uma fatia se destaca (highlight = índice, note = comentário)",
+        "total": "tudo volta e o total brilha (value = total)"
+      },
+      "fields": "items, label, value, highlight, note"
+    }
+  },
+  "metaphors": [
+    "O gráfico é o personagem: o roteiro acompanha a linha (normal, crise, virada, conquista)",
+    "Composição e diversificação com a carteira",
+    "Comparações de taxa ou custo com bars ou table",
+    "Fechar com o resultado concreto (counter) ou a promessa de controle"
+  ],
+  "notes": "Nunca prometa rentabilidade que não está no pitch. Números só se vierem do texto.",
+  "order": 4,
+  "icon": "solar:wallet-money-bold-duotone",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "produto",
+        "label": "Produto ou serviço",
+        "ph": "Ex.: carteira automática de renda fixa"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: quem está começando a investir"
+      },
+      {
+        "id": "prova",
+        "label": "Números reais (rentabilidade, clientes)",
+        "ph": "Ex.: 30 mil clientes"
+      },
+      {
+        "id": "diferencial",
+        "label": "Diferencial",
+        "ph": "Ex.: sem taxa de custódia"
+      }
+    ],
+    "assets": {
+      "hint": "Telas do app, fotos da equipe ou do escritório.",
+      "slots": [
+        "Tela do app",
+        "Equipe / escritório"
+      ]
+    },
+    "photo_hint": "pessoas planejando finanças, cidade, conquistas (casa, viagem)"
+  },
+  "style_defaults": {
+    "theme": "brand",
+    "skin": "premium",
+    "font": "geometric"
+  }
+}

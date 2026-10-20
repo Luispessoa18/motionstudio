@@ -1,0 +1,51 @@
+{
+  "id": "geral",
+  "name": "Outro / Geral",
+  "description": "Qualquer negócio. Usa só os componentes básicos.",
+  "keywords": [],
+  "font": "grotesk",
+  "particles": "dash",
+  "heroes": {},
+  "metaphors": [
+    "Problema com counter ou feed, solução com flow, prova com cards ou table",
+    "Um momento de impacto com big_word ou headline sozinha (none)"
+  ],
+  "notes": "",
+  "order": 9,
+  "icon": "solar:star-shine-bold-duotone",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "produto",
+        "label": "O que você oferece",
+        "ph": "Ex.: consultoria de marca"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: pequenas empresas"
+      },
+      {
+        "id": "diferencial",
+        "label": "Diferenciais",
+        "ph": "Ex.: entrega em 10 dias"
+      },
+      {
+        "id": "prova",
+        "label": "Provas ou números (só reais)",
+        "ph": "Ex.: 200 marcas atendidas"
+      }
+    ],
+    "assets": {
+      "hint": "Fotos do produto, do serviço ou do espaço.",
+      "slots": [
+        "Produto / serviço",
+        "Espaço / equipe"
+      ]
+    },
+    "photo_hint": "o produto ou serviço em uso, o cliente satisfeito"
+  },
+  "style_defaults": {
+    "skin": "premium"
+  }
+}

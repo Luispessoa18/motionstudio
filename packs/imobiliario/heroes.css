@@ -1,0 +1,23 @@
+.hl-lote{position:absolute;inset:0}
+.hl-3d{position:absolute;inset:0;perspective:2000px;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 70% 68% at 40% 55%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 70% 68% at 40% 55%,#000 55%,transparent 100%)}
+.hl-plane{position:absolute;transform-style:preserve-3d;transform-origin:50% 50%}
+.hl-blk{position:absolute;border:1px solid color-mix(in srgb,var(--fg) 10%,transparent);background:color-mix(in srgb,var(--fg) 2%,transparent);border-radius:3px}
+.hl-road{position:absolute;border-top:1px dashed color-mix(in srgb,var(--fg) 16%,transparent)}
+.hl-street{position:absolute;letter-spacing:.45em;color:var(--muted);font-weight:600;white-space:nowrap}
+.hl-lotsvg{position:absolute;left:0;top:0;overflow:visible}
+.hl-slab{position:absolute;border:1.5px solid color-mix(in srgb,var(--acc) 85%,transparent);background:color-mix(in srgb,var(--acc) 7%,transparent);border-radius:1px}
+.hl-slab.roof{background:color-mix(in srgb,var(--acc) 24%,transparent);box-shadow:0 0 30px color-mix(in srgb,var(--acc) 45%,transparent)}
+.hl-nslab{position:absolute;border:1px solid color-mix(in srgb,var(--fg) 22%,transparent);background:color-mix(in srgb,var(--fg) 2.5%,transparent)}
+.hl-call{position:absolute;right:0;top:0;bottom:0;width:270px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.hl-ci{padding:12px 18px}
+.hl-ci .c-val{font-size:34px}
+.hl-badge{position:absolute;left:10px;top:20px}
+.hl-badge .v{font-size:64px;font-weight:800;color:var(--acc);letter-spacing:-.03em;line-height:1.05}
+.hl-vgv{position:absolute;right:0;bottom:40px;padding:22px 26px;min-width:320px}
+.hl-vv{font-size:46px;font-weight:800;letter-spacing:-.03em;margin-top:6px;white-space:nowrap}
+.hm-map{position:absolute;inset:0;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 62% 62% at 46% 50%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 62% 62% at 46% 50%,#000 60%,transparent 100%)}
+.hm-map svg{position:absolute;left:0;top:0}
+.hm-tag{font-size:20px}
+.hm-rlab{position:absolute;font-size:22px;font-weight:800;color:var(--acc)}
+.hm-poi{font-size:16px;padding:8px 12px;font-weight:600}
+.hm-poi .mn{color:var(--acc);margin-left:6px}

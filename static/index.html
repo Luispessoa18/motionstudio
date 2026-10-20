@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Studio</title>
+<style>
+:root{--bg:#0d0d0f;--panel:#141417;--line:#26262b;--ink:#ececee;--mute:#8d8d95;--acc:#ff6a1a;--ok:#3ecf8e;--err:#ff5c5c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+#llmState{margin-left:auto;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:8px}
+#llmState i{width:8px;height:8px;border-radius:50%;background:var(--mute)}
+#llmState.ok i{background:var(--ok)}#llmState.bad i{background:var(--err)}
+main{display:grid;grid-template-columns:440px 1fr;min-height:calc(100vh - 58px)}
+aside{border-right:1px solid var(--line);padding:22px 24px 40px;overflow:auto;max-height:calc(100vh - 58px)}
+section.view{padding:22px 28px 40px;overflow:auto;max-height:calc(100vh - 58px)}
+label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:16px 0 6px}
+input[type=text],textarea,select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit}
+textarea{resize:vertical}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+.seg button{flex:1;background:none;border:0;color:var(--mute);padding:8px;border-radius:6px;font:inherit;font-weight:600;cursor:pointer}
+.seg button.on{background:#26262c;color:var(--ink)}
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;display:flex;gap:12px;align-items:center;cursor:pointer;background:var(--panel)}
+.drop:hover{border-color:#444}
+.drop input{display:none}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumbs img{height:46px;border-radius:6px;background:#222;object-fit:contain;max-width:120px}
+.hint{font-size:12.5px;color:var(--mute);margin-top:6px}
+.color{display:flex;gap:10px;align-items:center}
+.color input[type=color]{width:42px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:3px}
+.check{display:flex;gap:8px;align-items:center;margin-top:16px;color:var(--ink);font-weight:500}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:9px;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer;background:#26262c;color:var(--ink)}
+.btn.primary{background:var(--acc);color:#111;width:100%;margin-top:22px;padding:14px}
+.btn:disabled{opacity:.5;cursor:default}
+.status{margin-top:12px;font-size:13.5px;color:var(--mute);min-height:20px}
+.status.err{color:var(--err)}
+.stagewrap{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0 auto;max-height:70vh}
+.stagewrap iframe{display:block;width:100%;height:100%;border:0}
+.empty{display:grid;place-items:center;height:100%;color:var(--mute);text-align:center;padding:30px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.toolbar .seg{width:auto}
+.toolbar .sp{flex:1}
+.prog{height:6px;background:var(--panel);border-radius:3px;overflow:hidden;flex:1;min-width:160px;display:none}
+.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .4s}
+details{margin-top:18px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+details summary{cursor:pointer;padding:12px 16px;font-weight:600}
+details .in{padding:0 16px 16px}
+#storyEd{font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;min-height:340px;background:#0b0b0d}
+a.dl{color:var(--ink)}
+.seedbox{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mute)}
+.seedbox input[type=number]{width:96px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 8px;font:inherit}
+.mscene{border-top:1px solid var(--line);padding:14px 0}
+.mscene:first-of-type{border-top:0}
+.mscene h4{margin:0 0 4px;font-size:15px}
+.mscene .dir{font-size:12.5px;color:var(--mute);margin:4px 0 10px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.mgrid label{margin:0 0 3px;font-size:11.5px}
+.mgrid select{padding:7px 8px;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.chip{border:1px solid var(--line);background:#1b1b20;color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.chip.on{border-color:var(--acc);color:var(--acc)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.mact{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.vlist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.vlist li{display:flex;align-items:center;gap:10px;background:#1b1b20;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.vlist li b{flex:1;font-weight:600}
+.vlist audio{height:30px;max-width:220px}
+.readbox{background:#1b1b20;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;font-size:15px;line-height:1.55;margin-top:8px}
+.rec{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.rec .dot{width:10px;height:10px;border-radius:50%;background:var(--err);display:none}
+.rec.on .dot{display:inline-block;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+header .hb{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 12px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+header .hb:hover{border-color:#444}
+#llmState{margin-left:0}
+.hsp{flex:1}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:0;width:min(760px,calc(100vw - 32px));max-height:min(80vh,820px)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog .dh{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
+dialog .dh h2{font-size:16px;margin:0;flex:1}
+dialog .db{padding:6px 20px 20px;overflow:auto;max-height:calc(min(80vh,820px) - 64px)}
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.plist img{width:64px;height:40px;object-fit:contain;background:#000;border-radius:6px;flex:none}
+.plist .pi{flex:1;min-width:0}
+.plist .pi b{display:block}
+.plist .pi span{display:block;font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn.sm{padding:8px 12px;font-size:13.5px}
+.btn.danger{background:none;color:var(--err);border:1px solid #4a2626}
+input[type=password]{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 12px;font:inherit}
+.box{border:1px solid var(--line);border-radius:10px;padding:4px 14px 14px;margin-top:18px}
+.box legend{font-size:13px;font-weight:700;color:var(--ink);padding:0 6px}
+.inline{display:flex;gap:8px;align-items:center}
+.inline select{flex:1}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.warn{color:#f5b041}
+/* onboarding */
+#wiz{width:min(920px,calc(100vw - 24px));max-height:min(92vh,980px);display:none;flex-direction:column}
+#wiz[open]{display:flex}
+#wiz .dh{flex-wrap:wrap}
+.wsteps{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--mute);flex:1 1 100%;order:3}
+.wsteps li{padding:4px 10px;border-radius:999px;border:1px solid var(--line)}
+.wsteps li.on{color:#111;background:var(--acc);border-color:var(--acc);font-weight:700}
+.wsteps li.done{color:var(--ink)}
+.wbody{flex:1;overflow:auto;max-height:none !important}
+.wbody h3{margin:14px 0 4px;font-size:20px}
+.wfoot{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line)}
+.wfoot .status{flex:1;margin:0}
+.btn.wnext{background:var(--acc);color:#111}
+.wcats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:14px}
+.wcat{display:flex;flex-direction:column;gap:6px;text-align:left;padding:16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.wcat:hover{border-color:#555}.wcat.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+.wcat b{font-size:15px}.wcat span{font-size:12.5px;color:var(--mute)}
+.wslots{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.wslot{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12.5px;color:var(--mute);margin:2px}
+.wassets{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:12px}
+.wasset{display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.wasset img{width:96px;height:72px;object-fit:cover;border-radius:6px;flex:none}
+.wainfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.wainfo select,.wainfo input{padding:6px 8px;font-size:13px}
+.wainfo .hint{margin:0;font-size:11.5px;line-height:1.35}
+.wbrief{margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:13.5px}
+.wbrief p{margin:6px 0 10px;color:var(--mute)}
+.sw{display:inline-block;width:22px;height:22px;border-radius:6px;margin-right:6px;vertical-align:middle;border:1px solid #333}
+.wreview dl{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;margin:12px 0}
+.wreview dt{color:var(--mute)}.wreview dd{margin:0}
+.empty .btn{margin-top:14px}
+@media (max-width:980px){main{grid-template-columns:1fr}aside,section.view{max-height:none}}
+</style>
+</head>
+<body>
+<header><h1>Motion Studio</h1><span style="color:var(--mute);font-size:13px">pitch + logo → motion HTML / MP4 / WebM</span><span class="hsp"></span><span id="llmState"><i></i><span>verificando IA…</span></span>
+<button class="hb" id="openWizard" type="button" style="border-color:var(--acc)">+ Novo motion</button><button class="hb" id="openProjects" type="button">Projetos</button><button class="hb" id="openSettings" type="button">Configurações</button></header>
+<main>
+<aside>
+  <form id="f">
+    <label for="pack">Categoria</label>
+    <select id="pack" name="pack"><option value="auto">Detectar pelo pitch</option></select>
+    <p class="hint" id="packHint">Cada pacote traz visuais próprios do setor (terreno 3D, transação passando por barreiras, telas de app, gráficos).</p>
+
+    <label for="name">Marca</label>
+    <input type="text" id="name" name="name" placeholder="Ex.: AVAL" autocomplete="off">
+
+    <label>Logo</label>
+    <div class="drop" id="logoDrop" tabindex="0" role="button" aria-label="Escolher logo">
+      <input type="file" id="logo" name="logo" accept="image/*">
+      <div class="thumbs" id="logoThumb"></div>
+      <span id="logoTxt">Clique para escolher o logo (PNG transparente é o ideal)</span>
+    </div>
+
+    <label for="pitch">Pitch ou roteiro</label>
+    <textarea id="pitch" name="pitch" rows="9" placeholder="Cole aqui o texto do pitch. A IA transforma em cenas."></textarea>
+
+    <div class="row">
+      <div><label for="tagline">Tagline (opcional)</label><input type="text" id="tagline" name="tagline" placeholder="A IA cria se ficar vazio"></div>
+      <div><label for="cta">Chamada final (opcional)</label><input type="text" id="cta" name="cta" placeholder="Ex.: Clique no link da bio"></div>
+    </div>
+
+    <label>Fotos para usar no vídeo (opcional)</label>
+    <div class="drop" id="assetDrop" tabindex="0" role="button" aria-label="Escolher fotos para o vídeo">
+      <input type="file" id="assetsIn" accept="image/*" multiple>
+      <div class="thumbs" id="assetThumbs"></div>
+      <span id="assetTxt">Até 12 fotos (fachadas, produto, ambientes). A IA identifica cada uma.</span>
+    </div>
+    <label>Referências de estilo (opcional)</label>
+    <div class="drop" id="refDrop" tabindex="0" role="button" aria-label="Escolher imagens de referência de estilo">
+      <input type="file" id="refs" name="refs" accept="image/*" multiple>
+      <div class="thumbs" id="refThumbs"></div>
+      <span id="refTxt">Até 5 artes de que você gosta. Não aparecem no vídeo: a IA copia o estilo.</span>
+    </div>
+
+    <label for="style">Notas de estilo (opcional)</label>
+    <input type="text" id="style" name="style" placeholder="Ex.: minimalista P&B, clima de segurança digital">
+
+    <label>Formato</label>
+    <div class="seg" id="fmtSeg"><button type="button" data-v="landscape" class="on">16:9 · 1920×1080</button><button type="button" data-v="portrait">9:16 · 1080×1920</button></div>
+
+    <div class="row">
+      <div><label for="duration">Duração</label>
+        <select id="duration" name="duration"><option value="auto">Automática</option><option value="15">15s</option><option value="20">20s</option><option value="30">30s</option><option value="45">45s</option><option value="60">60s</option><option value="90">90s</option></select></div>
+      <div><label for="font">Tipografia</label>
+        <select id="font" name="font"><option value="">IA escolhe</option></select></div>
+    </div>
+
+    <label>Cor de destaque</label>
+    <div class="color"><input type="color" id="accentPick" value="#ff6a1a" aria-label="Cor de destaque"><select id="accentMode"><option value="auto">Usar cor do logo</option><option value="custom">Usar a cor escolhida</option><option value="mono">Preto e branco</option></select></div>
+
+    <div class="row">
+      <div><label for="theme">Fundo do vídeo</label>
+        <select id="theme"><option value="auto">Automático (combina com a marca)</option><option value="dark">Escuro</option><option value="light">Claro</option><option value="brand">Cor da marca</option></select></div>
+      <div><label for="deco">Decoração animada</label>
+        <select id="deco"><option value="">IA escolhe</option><option value="orbs">Manchas de luz</option><option value="shapes">Formas geométricas</option><option value="rings">Anéis girando</option><option value="lines">Feixes diagonais</option><option value="waves">Ondas</option><option value="none">Nenhuma</option></select></div>
+    </div>
+    <label for="skin">Estilo visual</label>
+    <select id="skin"><option value="">IA escolhe</option><option value="premium">Premium (moldura, vidro, selo, degradê)</option><option value="clean">Clean (mais seco e técnico)</option></select>
+    <div class="row">
+      <div><label for="logoIn">Logo na abertura</label><select id="logoIn"><option value="">IA escolhe</option><option value="draw">Desenhar o traço</option><option value="blur">Desfoque → foco</option><option value="wipe">Blocos de cor</option><option value="slices">Fatias</option><option value="glitch">Glitch digital</option><option value="pixel">Mosaico de pixels</option><option value="iris">Íris (círculo)</option><option value="shatter">Estilhaços</option><option value="impact">Impacto (carimbo)</option></select></div>
+      <div><label for="logoOut">Logo no fecho</label><select id="logoOut"><option value="">IA escolhe</option><option value="draw">Desenhar o traço</option><option value="blur">Desfoque → foco</option><option value="wipe">Blocos de cor</option><option value="slices">Fatias</option><option value="glitch">Glitch digital</option><option value="pixel">Mosaico de pixels</option><option value="iris">Íris (círculo)</option><option value="shatter">Estilhaços</option><option value="impact">Impacto (carimbo)</option></select></div>
+    </div>
+    <label for="logoFix">Contraste do logo com o fundo</label>
+    <select id="logoFix"><option value="auto">Automático (detecta e decide)</option><option value="none">Manter as cores originais</option><option value="invert">Inverter partes pretas/brancas</option><option value="plate">Mostrar o logo sobre fundo claro</option></select>
+    <div class="hint" id="logoInfo">"Desenhar o traço" só funciona com logos simples, que viram SVG.</div>
+
+    <label class="check"><input type="checkbox" id="progress" checked> Barra de progresso no vídeo</label>
+
+    <fieldset class="box" id="audioBox">
+      <legend>Áudio</legend>
+      <label class="check"><input type="checkbox" id="narration"> Narração (ElevenLabs, KittenTTS ou voz clonada)</label>
+      <div class="inline" style="margin-top:8px"><select id="voice" aria-label="Voz da narração"><option value="">Voz padrão</option></select><button class="btn sm" type="button" id="voicePlay" title="Ouvir uma amostra desta voz">▶ Ouvir</button></div>
+      <audio id="voiceAudio" hidden></audio>
+      <p class="hint" id="narrHint">A IA escreve uma locução que complementa a tela (não repete a headline) e cada cena dura o tempo da fala.</p>
+      <label for="music">Música de fundo</label>
+      <div class="inline"><select id="music"><option value="">Sem música</option></select><button class="btn sm" type="button" id="upMusic">Enviar…</button></div>
+      <label for="musicVol">Volume da música</label>
+      <input type="range" id="musicVol" min="0" max="1" step="0.05" value="0.25">
+      <label class="check"><input type="checkbox" id="sfx" checked> Efeitos sonoros nas animações</label>
+      <p class="hint" id="sfxHint">Efeitos da pasta sfx/. <button class="btn sm" type="button" id="upSfx" style="margin-left:6px">Enviar efeito…</button></p>
+      <input type="file" id="libFile" accept="audio/*" hidden>
+    </fieldset>
+
+    <label for="model">Modelo de roteiro</label>
+    <select id="model"><option value="">Padrão do servidor</option></select>
+
+    <button class="btn primary" id="go" type="submit">Gerar motion</button>
+    <div class="status" id="st" role="status" aria-live="polite"></div>
+  </form>
+</aside>
+
+<section class="view">
+  <div class="stagewrap" id="sw" style="aspect-ratio:16/9"><div class="empty" id="empty">O preview aparece aqui depois de gerar.<br><button class="btn" type="button" onclick="openWizard()" style="background:var(--acc);color:#111">Começar passo a passo</button><br><span class="hint">Ou use o formulário rápido ao lado.</span></div></div>
+  <div class="toolbar" id="tb" hidden>
+    <div class="seg" id="fmtSeg2"><button type="button" data-v="landscape">16:9</button><button type="button" data-v="portrait">9:16</button></div>
+    <button class="btn" id="reload" type="button">Reiniciar preview</button>
+    <button class="btn" id="regen" type="button" title="Outro roteiro, outra receita visual">Novo roteiro</button>
+    <button class="btn" id="remotion" type="button" title="Mesmo roteiro, motion novo (a IA dirige cada cena de novo)">Novo motion</button>
+    <span class="seedbox" title="Semente: com a mesma semente o resultado se repete"><label for="seedIn" style="margin:0">Semente</label><input type="number" id="seedIn" min="1" aria-label="Semente"><label class="check" style="margin:0"><input type="checkbox" id="seedLock">manter</label></span>
+    <span class="sp"></span>
+    <select id="fps" aria-label="Quadros por segundo" style="width:auto"><option value="30">30 fps</option><option value="60">60 fps</option><option value="24">24 fps</option></select>
+    <select id="vfmt" aria-label="Formato do vídeo" style="width:auto"><option value="mp4">MP4 (H.264)</option><option value="webm">WebM (VP9)</option></select>
+    <button class="btn" id="render" type="button">Renderizar vídeo</button>
+    <div class="prog" id="rprog"><i></i></div>
+    <span id="dl"></span>
+  </div>
+  <div class="status" id="st2" role="status" aria-live="polite"></div>
+  <details id="detPlan" hidden>
+    <summary>Plano de direção da IA</summary>
+    <div class="in"><p class="hint">Batidas e visuais que a IA escolheu antes de escrever o roteiro.</p><pre id="planBox" style="white-space:pre-wrap;font:12.5px/1.5 ui-monospace,Menlo,monospace;margin:0"></pre></div>
+  </details>
+  <details id="detMotion" hidden>
+    <summary>Motion por cena</summary>
+    <div class="in"><p class="hint" id="dnaInfo"></p><div id="mList"></div></div>
+  </details>
+  <details id="det" hidden>
+    <summary>Roteiro (JSON editável)</summary>
+    <div class="in">
+      <p class="hint">Edite textos, troque componentes ou reordene cenas. Tipos: counter, cards, bars, chat, flow, checklist, steps, table, verdict, feed, image, big_word, none e hero (com hero e state do pacote).</p>
+      <textarea id="storyEd" spellcheck="false"></textarea>
+      <div class="toolbar"><button class="btn" id="apply" type="button">Aplicar roteiro</button><a class="dl" id="dlHtml" href="#" download>Baixar HTML</a><a class="dl" id="dlZip" href="#" download>Exportar projeto (.zip)</a></div>
+    </div>
+  </details>
+</section>
+</main>
+
+<dialog id="dlgProjects" aria-labelledby="dlgPT">
+  <div class="dh"><h2 id="dlgPT">Projetos salvos</h2>
+    <button class="btn sm" type="button" id="importBtn">Importar .zip</button><input type="file" id="importFile" accept=".zip" hidden>
+    <button class="btn sm" type="button" id="newProject">Novo</button>
+    <button class="btn sm" type="button" data-close>Fechar</button></div>
+  <div class="db"><p class="hint">Todo projeto é salvo sozinho a cada alteração. Clique para reabrir.</p><ul class="plist" id="plist"></ul></div>
+</dialog>
+
+<dialog id="dlgSettings" aria-labelledby="dlgST">
+  <div class="dh"><h2 id="dlgST">Configurações</h2><button class="btn sm" type="button" data-close>Fechar</button></div>
+  <form class="db" id="setForm">
+    <p class="hint">As chaves ficam no arquivo .env deste computador e nunca são mostradas de volta. Deixe em branco para manter a atual.</p>
+    <label class="check"><input type="checkbox" id="ELEVENLABS_ENABLED"> Usar a ElevenLabs (desligada: a chave fica guardada, mas não é usada)</label>
+    <label for="ELEVENLABS_API_KEY">ElevenLabs: chave da API</label><input type="password" id="ELEVENLABS_API_KEY" autocomplete="off">
+    <div class="row">
+      <div><label for="ELEVENLABS_VOICE_ID">Voz padrão</label><select id="ELEVENLABS_VOICE_ID"><option value="">Primeira da conta</option></select></div>
+      <div><label for="ELEVENLABS_MODEL">Modelo de voz</label><select id="ELEVENLABS_MODEL"><option value="eleven_multilingual_v2">multilingual v2 (melhor PT-BR)</option><option value="eleven_v3">v3 (mais expressivo)</option><option value="eleven_flash_v2_5">flash v2.5 (rápido, barato)</option><option value="eleven_turbo_v2_5">turbo v2.5</option></select></div>
+    </div>
+    <fieldset class="box" style="margin-top:18px"><legend>Voz local (KittenTTS)</legend>
+      <p class="hint" id="kitHint">Verificando a KittenTTS…</p>
+      <div class="row">
+        <div><label for="TTS_ENGINE">Motor de voz padrão</label><select id="TTS_ENGINE"><option value="kitten">KittenTTS (local, grátis)</option><option value="elevenlabs">ElevenLabs</option></select></div>
+        <div><label for="KITTEN_VOICE">Voz nativa padrão</label><select id="KITTEN_VOICE"><option value="">Portuguese</option></select></div>
+      </div>
+      <label for="KITTEN_PRESET">Estilo da fala</label><select id="KITTEN_PRESET"><option value="">Estável (padrão)</option><option value="expressive">Expressiva</option></select>
+      <h3 style="margin:18px 0 4px;font-size:15px">Vozes clonadas</h3>
+      <p class="hint">Grave ou envie de 10 a 30 segundos de uma pessoa só falando, sem música e sem eco. A voz aparece na lista de narração.</p>
+      <ul class="vlist" id="cloneList"></ul>
+      <label for="cloneName">Nome da voz</label><input type="text" id="cloneName" placeholder="Ex.: Minha voz, Locutor Ana">
+      <label>Gravar agora: leia o texto abaixo em voz alta, no seu ritmo natural</label>
+      <div class="readbox" id="cloneRead">Olá! Estou gravando esta mensagem para que o sistema aprenda a minha voz. Vou falar com calma, no meu ritmo natural, como se estivesse contando uma novidade para um amigo. Cada detalhe da fala ajuda: a respiração, as pausas e o jeito de terminar as frases.</div>
+      <div class="rec" id="recBox"><button class="btn sm" type="button" id="recBtn">● Gravar</button><span class="dot"></span><span id="recTime" class="hint" style="margin:0"></span><audio id="recAudio" controls hidden style="height:32px"></audio><button class="btn sm" type="button" id="recSave" hidden>Salvar voz gravada</button></div>
+      <label for="cloneFile">Ou envie um arquivo de áudio (mp3, wav, m4a, ogg, webm)</label><input type="file" id="cloneFile" accept="audio/*,.webm">
+      <label for="cloneText">O que é falado no arquivo (opcional, melhora muito a semelhança)</label><textarea id="cloneText" rows="2" placeholder="Transcreva exatamente o que a pessoa fala no áudio"></textarea>
+      <button class="btn sm" type="button" id="cloneUp" style="margin-top:8px">Enviar e clonar</button>
+      <div class="status" id="cloneSt" role="status" aria-live="polite"></div>
+    </fieldset>
+    <label for="PEXELS_API_KEY">Pexels: chave da API (fotos)</label><input type="password" id="PEXELS_API_KEY" autocomplete="off">
+    <p class="hint">Grátis em pexels.com/api.</p>
+    <label for="PIXABAY_API_KEY">Pixabay: chave da API (fotos)</label><input type="password" id="PIXABAY_API_KEY" autocomplete="off">
+    <p class="hint">Grátis em pixabay.com/api/docs. Ícones vêm do Iconify (Lucide) e não precisam de chave.</p>
+    <button class="btn primary" type="submit">Salvar</button>
+    <div class="status" id="setSt" role="status" aria-live="polite"></div>
+  </form>
+</dialog>
+<dialog id="wiz" aria-labelledby="wizT">
+  <div class="dh"><h2 id="wizT">Novo motion</h2><ol class="wsteps" id="wsteps"></ol><button class="btn sm" type="button" data-close>Fechar</button></div>
+  <div class="db wbody">
+    <!-- 0 categoria -->
+    <section class="wstep" data-step="0">
+      <h3>Qual é a categoria?</h3>
+      <p class="hint">A categoria define as perguntas, as fotos que vale a pena mandar e os visuais que a IA usa.</p>
+      <div class="wcats" id="wcats"></div>
+    </section>
+    <!-- 1 marca -->
+    <section class="wstep" data-step="1" hidden>
+      <h3>Sua marca</h3>
+      <label for="wName">Nome da marca</label><input type="text" id="wName" placeholder="Ex.: Viverde Itaipava Residences" autocomplete="off">
+      <label>Logo</label>
+      <div class="drop" id="wLogoDrop" tabindex="0" role="button" aria-label="Escolher logo"><input type="file" id="wLogo" accept="image/*"><div class="thumbs" id="wLogoThumb"></div><span id="wLogoTxt">Clique ou arraste o logo (PNG transparente é o ideal; a IA ajusta as cores ao fundo)</span></div>
+      <div class="row">
+        <div><label for="wTag">Tagline (opcional)</label><input type="text" id="wTag" placeholder="A IA cria se ficar vazio"></div>
+        <div><label for="wCta">Chamada final (opcional)</label><input type="text" id="wCta" placeholder="Ex.: Agende sua visita"></div>
+      </div>
+    </section>
+    <!-- 2 conteúdo -->
+    <section class="wstep" data-step="2" hidden>
+      <h3>Sobre o que é o vídeo</h3>
+      <label for="wPitch">Pitch, texto do site ou descrição</label>
+      <textarea id="wPitch" rows="6" placeholder="Cole aqui o texto. Quanto mais concreto, melhor o roteiro."></textarea>
+      <div id="wQs"></div>
+      <label for="wNote">Algo mais que a IA deve saber? (opcional)</label>
+      <input type="text" id="wNote" placeholder="Ex.: tom acolhedor, nada de preço no vídeo">
+    </section>
+    <!-- 3 fotos -->
+    <section class="wstep" data-step="3" hidden>
+      <h3>Fotos para usar no vídeo</h3>
+      <p class="hint" id="wAssetHint"></p>
+      <div class="wslots" id="wSlots"></div>
+      <div class="drop" id="wAssetDrop" tabindex="0" role="button" aria-label="Escolher fotos"><input type="file" id="wAssets" accept="image/*" multiple><span id="wAssetTxt">Clique ou arraste até 12 fotos. A IA identifica o que é cada uma.</span></div>
+      <div class="wassets" id="wAssetList"></div>
+      <p class="hint">Sem foto de algo? A IA busca no banco de imagens (ex.: a paisagem da região), se houver chave do Pexels/Pixabay.</p>
+    </section>
+    <!-- 4 estilo -->
+    <section class="wstep" data-step="4" hidden>
+      <h3>Estilo de design</h3>
+      <p class="hint">Mande artes que você gosta (posts, anúncios, peças da marca). Elas <b>não aparecem</b> no vídeo: a IA copia o estilo (cores, tipografia, molduras, cartões).</p>
+      <div class="drop" id="wStyleDrop" tabindex="0" role="button" aria-label="Escolher referências de estilo"><input type="file" id="wStyle" accept="image/*" multiple><div class="thumbs" id="wStyleThumbs"></div><span id="wStyleTxt">Até 5 referências (opcional)</span></div>
+      <div class="wbrief" id="wBrief" hidden></div>
+      <div class="row">
+        <div><label for="wTheme">Fundo</label><select id="wTheme"><option value="auto">Automático</option><option value="dark">Escuro</option><option value="light">Claro</option><option value="brand">Cor da marca</option></select></div>
+        <div><label for="wSkin">Estilo visual</label><select id="wSkin"><option value="">Automático</option><option value="premium">Premium</option><option value="clean">Clean</option></select></div>
+      </div>
+      <div class="row">
+        <div><label for="wFont">Tipografia</label><select id="wFont"><option value="">Automática</option></select></div>
+        <div><label for="wDeco">Decoração</label><select id="wDeco"><option value="">Automática</option><option value="orbs">Manchas de luz</option><option value="shapes">Formas</option><option value="rings">Anéis</option><option value="lines">Feixes</option><option value="waves">Ondas</option><option value="none">Nenhuma</option></select></div>
+      </div>
+    </section>
+    <!-- 5 formato -->
+    <section class="wstep" data-step="5" hidden>
+      <h3>Formato e áudio</h3>
+      <label>Formato</label>
+      <div class="seg" id="wFmt"><button type="button" data-v="portrait" class="on">9:16 · Stories / Reels</button><button type="button" data-v="landscape">16:9 · YouTube / site</button></div>
+      <label for="wDur">Duração</label>
+      <select id="wDur"><option value="15">15s</option><option value="20">20s</option><option value="30" selected>30s</option><option value="45">45s</option><option value="60">60s</option><option value="90">90s</option><option value="auto">Automática</option></select>
+      <label class="check"><input type="checkbox" id="wNarr"> Narração (voz escolhida em Configurações)</label>
+      <label for="wMusic">Música de fundo</label><select id="wMusic"><option value="">Sem música</option></select>
+    </section>
+    <!-- 6 revisão -->
+    <section class="wstep" data-step="6" hidden>
+      <h3>Tudo pronto</h3>
+      <div id="wReview" class="wreview"></div>
+      <p class="hint">A IA vai planejar o filme, escrever uma direção detalhada para cada cena e montar o motion. Leva de 1 a 3 minutos.</p>
+    </section>
+  </div>
+  <div class="wfoot">
+    <div class="status" id="wSt" role="status" aria-live="polite"></div>
+    <button class="btn" type="button" id="wBack">Voltar</button>
+    <button class="btn wnext" type="button" id="wNext">Continuar</button>
+  </div>
+</dialog>
+<script>
+const $=s=>document.querySelector(s);
+let P=null, fmt='landscape', CFG=null;
+const setSt=(id,msg,err)=>{const e=$(id);e.textContent=msg||'';e.classList.toggle('err',!!err)};
+async function api(url,opt={}){const r=await fetch(url,opt);let j=null;try{j=await r.json()}catch{}if(!r.ok)throw new Error((j&&j.detail)||('Erro '+r.status));return j}
+const jsonOpt=(method,body)=>({method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fillMusic(list,sel){const m=$('#music');const cur=sel!==undefined?sel:m.value;m.innerHTML='<option value="">Sem música</option>';
+  list.forEach(n=>m.add(new Option(n,n)));m.value=list.includes(cur)?cur:''}
+let VOICES=null;
+async function loadVoices(){
+  try{const v=VOICES=await api('/api/voices');
+    const lab=x=>x.name+(x.desc?' · '+x.desc:'');
+    const groups=[['eleven','ElevenLabs'],['kitten','KittenTTS (local)'],['clone','Vozes clonadas']];
+    const s=$('#voice'),cur=s.dataset.sel??(P?(P.options.voice||''):'');
+    const dname=(v.voices.find(x=>x.id===v.default)||{}).name;
+    s.innerHTML=`<option value="">Voz padrão${dname?' ('+esc(dname)+')':''}</option>`;
+    groups.forEach(([eng,name])=>{const vs=v.voices.filter(x=>x.engine===eng);if(!vs.length)return;
+      const g=document.createElement('optgroup');g.label=name;vs.forEach(x=>g.appendChild(new Option(lab(x),x.id)));s.appendChild(g)});
+    setVoiceSel(cur);
+    const e=$('#ELEVENLABS_VOICE_ID');e.length=1;v.voices.filter(x=>x.engine==='eleven').forEach(x=>e.add(new Option(lab(x),x.id)));e.value=v.eleven_default||'';
+    const k=$('#KITTEN_VOICE'),kc=k.value;k.length=1;v.voices.filter(x=>x.engine==='kitten'&&x.name!=='Portuguese').forEach(x=>k.add(new Option(x.name,x.name)));k.value=kc;
+    renderKitten(v);
+  }catch{}
+}
+// Seleciona a voz guardada. Voz da KittenTTS ainda carregando continua selecionada (opção provisória);
+// voz da ElevenLabs desligada vira "Voz padrão".
+function setVoiceSel(val){
+  const s=$('#voice');val=val||'';
+  if(val&&![...s.options].some(o=>o.value===val)){
+    if(/^(kitten|clone):/.test(val))s.add(new Option(val.replace(/^kitten:/,'').replace(/^clone:.*/,'Voz clonada'),val));else val='';
+  }
+  s.value=val;s.dataset.sel=val;
+}
+function renderKitten(v){
+  const ks=v.kitten;
+  $('#kitHint').innerHTML=!v.engines.kitten?'KittenTTS não encontrada. Instale com <code>pip install kittenml</code> (ou defina KITTEN_PYTHON no .env) e reinicie o app.'
+    :ks.status==='ready'?`Pronta: ${ks.voices.length} vozes (modelo ${esc(ks.model)}, carregou em ${ks.load_s}s). Roda no seu computador, sem chave. Em CPU leva ~15 a 20s para cada segundo de fala na primeira vez; depois fica em cache.`
+    :ks.status==='error'?`Erro ao carregar: ${esc(ks.error)}`:'Carregando o modelo em segundo plano (a primeira vez baixa ~1 GB)…';
+  if(v.engines.kitten&&ks.status==='loading')setTimeout(loadVoices,5000);
+  $('#cloneList').innerHTML=(v.clones||[]).map(c=>`<li><b>${esc(c.name)}</b><span class="hint" style="margin:0">${c.dur}s${c.text?' · com transcrição':''}</span><audio controls preload="none" src="/api/voices/clone/${c.cid}/audio"></audio><button class="btn sm" type="button" data-del="${c.cid}">Apagar</button></li>`).join('')||'<li class="hint">Nenhuma voz clonada ainda.</li>';
+}
+async function loadConfig(){
+  const c=CFG=await api('/api/config');
+  const s=$('#llmState');
+  if(c.backend==='mock'){s.className='ok';s.lastChild.textContent='modo demonstração (sem IA)'}
+  else if(c.connected){s.className='ok';s.lastChild.textContent=(c.provider||c.backend)+' conectado · '+c.default_model}
+  else{s.className='bad';s.lastChild.textContent=(c.provider||c.backend)+' não respondeu'}
+  if($('#font').length<=1)c.fonts.forEach(f=>$('#font').add(new Option(f,f)));
+  if($('#pack').length<=1)(c.categories||c.packs||[]).forEach(p=>{const o=new Option(p.name,p.id);o.title=p.description;$('#pack').add(o)});
+  if($('#model').length<=1)c.models.forEach(m=>{let tags=[];if(m.includes('-thinking'))tags.push('thinking');if(m.includes('-agentic'))tags.push('agentic');$('#model').add(new Option(m+(tags.length?' · '+tags.join(' + '):''),m))});
+  fillMusic(c.music,P?(P.options.music||''):(c.music[0]||''));
+  $('#narration').disabled=!c.narration;$('#voice').disabled=!c.narration;
+  $('#narrHint').innerHTML=c.narration?'A IA escreve uma locução que complementa a tela (não repete a headline) e cada cena dura o tempo da fala.'+(c.tts&&c.tts.kitten?' Vozes da KittenTTS rodam no seu computador: a primeira geração demora alguns minutos.':'')
+    :'Para narrar, adicione a chave da ElevenLabs ou instale a KittenTTS (<code>pip install kittenml</code>) e veja <b>Configurações</b>.';
+  if(c.narration)loadVoices();
+  api('/api/library').then(l=>{const roles=[...new Set(l.sfx.filter(x=>x.role).map(x=>x.role))];
+    $('#sfxHint').firstChild.textContent=l.sfx.length?`${l.sfx.length} efeito(s) na pasta sfx/ (${roles.join(', ')||'sem papel reconhecido'}). `:'Nenhum efeito na pasta sfx/. '}).catch(()=>{});
+  return c;
+}
+
+function bindDrop(drop,input,thumbs,txt,multi){
+  drop.addEventListener('click',()=>input.click());
+  drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click()}});
+  drop.addEventListener('dragover',e=>{e.preventDefault()});
+  drop.addEventListener('drop',e=>{e.preventDefault();input.files=e.dataTransfer.files;input.dispatchEvent(new Event('change'))});
+  input.addEventListener('change',()=>{thumbs.innerHTML='';[...input.files].slice(0,multi?6:1).forEach(f=>{const i=new Image();i.src=URL.createObjectURL(f);i.alt=f.name;thumbs.appendChild(i)});txt.textContent=input.files.length?(input.files.length+' arquivo(s)'):txt.dataset.t});
+  txt.dataset.t=txt.textContent;
+}
+bindDrop($('#logoDrop'),$('#logo'),$('#logoThumb'),$('#logoTxt'),false);
+bindDrop($('#refDrop'),$('#refs'),$('#refThumbs'),$('#refTxt'),true);
+bindDrop($('#assetDrop'),$('#assetsIn'),$('#assetThumbs'),$('#assetTxt'),true);
+
+function segBind(seg,cb){seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));cb(b.dataset.v)}))}
+segBind($('#fmtSeg'),v=>fmt=v);
+segBind($('#fmtSeg2'),async v=>{if(!P)return;await patch({format:v})});
+
+function accentValue(){const m=$('#accentMode').value;return m==='auto'?'':m==='mono'?'#FFFFFF':$('#accentPick').value}
+
+// Preenche o formulário com os dados de um projeto reaberto.
+function fillForm(p){
+  const b=p.brief||{},o=p.options||{};
+  $('#name').value=b.name||p.brand.name||'';$('#pitch').value=b.pitch||'';$('#style').value=b.style||'';
+  $('#tagline').value=o.tagline||'';$('#cta').value=o.cta||'';$('#duration').value=o.duration||'auto';$('#font').value=o.font||'';
+  $('#progress').checked=o.progress!==false;$('#pack').value=p.pack||'auto';$('#model').value=o.model||'';
+  if(!o.accent)$('#accentMode').value='auto';else if(o.accent.toUpperCase()==='#FFFFFF')$('#accentMode').value='mono';else{$('#accentMode').value='custom';$('#accentPick').value=o.accent}
+  fmt=o.format||'landscape';$('#fmtSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.v===fmt));
+  $('#narration').checked=!!o.narration;setVoiceSel(o.voice||'');$('#sfx').checked=o.sfx!==false;
+  fillMusic(CFG?CFG.music:[],o.music||'');$('#musicVol').value=o.music_volume??.25;
+  $('#theme').value=o.theme||'auto';$('#skin').value=o.skin||'';$('#deco').value=o.deco||'';
+  $('#logoIn').value=o.logo_intro||'';$('#logoOut').value=o.logo_outro||'';$('#logoFix').value=o.logo_fix||'auto';
+  $('#logoThumb').innerHTML=`<img src="/api/projects/${p.id}/logo" alt="Logo atual">`;$('#logoTxt').textContent='Logo do projeto (é reaproveitado; escolha outro arquivo só se quiser trocar)';
+}
+
+function videoLinks(p){return (p.videos||[]).map(f=>`<a class="dl" href="/api/projects/${p.id}/video?fmt=${f}" download>Baixar ${f.toUpperCase()}</a>`).join(' · ')}
+
+function show(p){
+  P=p;
+  if(location.hash!=='#'+p.id)history.replaceState(null,'','#'+p.id);
+  const f=p.options.format;
+  $('#sw').style.aspectRatio=f==='portrait'?'9/16':'16/9';
+  $('#sw').style.width=f==='portrait'?'min(100%, calc(70vh * 9 / 16))':'100%';
+  $('#sw').innerHTML=`<iframe title="Preview do motion" src="/p/${p.id}?t=${Date.now()}" allow="autoplay"></iframe>`;
+  $('#tb').hidden=false;$('#det').hidden=false;$('#detPlan').hidden=false;
+  $('#fmtSeg2').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===f));
+  $('#storyEd').value=JSON.stringify(p.story,null,2);
+  $('#dlHtml').href=`/api/projects/${p.id}/html`;$('#dlZip').href=`/api/projects/${p.id}/export`;
+  $('#dl').innerHTML=videoLinks(p);
+  const pk=($('#pack').querySelector(`option[value="${p.pack}"]`)||{}).textContent||p.pack||'';
+  const audio=[p.narrated?'narrado':null,p.has_audio?'com trilha':'sem áudio'].filter(Boolean).join(', ');
+  setSt('#st2',[p.brand.name,`${p.story.scenes.length} cenas`,`${p.duration.toFixed(1)}s`,f==='portrait'?'1080×1920':'1920×1080',`pacote ${pk}`,audio].filter(Boolean).join(' · '));
+  if(p.warnings&&p.warnings.length){const w=document.createElement('div');w.className='warn';w.textContent=p.warnings.join(' ');$('#st2').appendChild(w)}
+  const FX={draw:'desenhar o traço',blur:'desfoque',wipe:'blocos de cor',slices:'fatias',glitch:'glitch',pixel:'mosaico',iris:'íris',shatter:'estilhaços',impact:'impacto'};
+  const FIXT={none:'cores originais',invert:'com partes invertidas',plate:'sobre selo de contraste'};
+  const THT={dark:'escuro',light:'claro',brand:'cor da marca'};
+  const pal=(p.brand.palette||[]).map(c=>`<i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${c};vertical-align:-1px;margin-right:3px"></i>`).join('');
+  $('#logoInfo').innerHTML=`${p.reveal?`Agora: abre com <b>${FX[p.reveal.intro]||p.reveal.intro}</b>, fecha com <b>${FX[p.reveal.outro]||p.reveal.outro}</b>. `:''}Fundo ${THT[p.brand.theme]||'escuro'}. Logo ${FIXT[p.brand.fix]||''}${p.brand.svg?', vetorizado (SVG)':''}. Paleta: ${pal}`;
+  $('#planBox').textContent=p.plan?JSON.stringify(p.plan,null,2):'(sem plano: modo de uma etapa ou demonstração)';
+  if(!$('#seedLock').checked)$('#seedIn').value=p.seed||'';
+  renderMotion(p);
+}
+
+/* ---------- motion por cena ---------- */
+const MF={text_fx:['Texto',['rise','bars','blur','type','split','marker','underline','scale','rotate','flip','kinetic','stack','wave','zoom','slice']],
+  text_bg:['Base do texto',['none','bar','block','highlight','glass','outline']],
+  camera:['Câmera',['still','push_in','pull_out','drift','tilt','spin_in','shake','parallax']],
+  emphasis:['Ênfase',['none','pop','spin','circle','strike','color_swap','glow','underline_draw']],
+  ornament:['Ornamento',['none','spin_ring','orbit_dots','rotating_badge','corner_brackets','big_number_bg','grid_sweep']],
+  align:['Alinhamento',['left','center','right']],
+  transition:['Transição (entrada)',['cut','fade','wipe','slide','push','zoom','iris','spin','blinds','flash','glitch','match']]};
+const esc2=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sameM=(a,b)=>a&&b&&Object.keys(MF).every(k=>(a[k]||'')===(b[k]||''));
+function renderMotion(p){
+  $('#detMotion').hidden=false;
+  const d=p.dna;
+  $('#dnaInfo').innerHTML=d?`Receita desta semente: <b>${esc2(d.name)}</b>. ${esc2(d.desc)}<br>Ângulo: ${esc2(d.angle)}`:'';
+  $('#mList').innerHTML=p.story.scenes.map((sc,i)=>{
+    if((sc.ui||{}).type==='big_word')return `<div class="mscene"><h4>${i+1}. ${esc2(sc.ui.word)}</h4><p class="dir">Palavra gigante: animação própria.</p></div>`;
+    const m=sc.motion||{};
+    const sel=Object.entries(MF).map(([k,[lab,vals]])=>`<div><label for="m${i}_${k}">${lab}</label><select id="m${i}_${k}" data-i="${i}" data-k="${k}">${vals.map(v=>`<option${v===m[k]?' selected':''}>${v}</option>`).join('')}</select></div>`).join('');
+    const chips=(sc.ideas||[]).map((x,k)=>`<button type="button" class="chip${sameM(x,m)?' on':''}" data-i="${i}" data-idea="${k}" title="${esc2(Object.keys(MF).map(f=>x[f]).filter(Boolean).join(' · '))}">${esc2(x.nome||('Ideia '+(k+1)))}</button>`).join('');
+    return `<div class="mscene"><h4>${i+1}. ${esc2((sc.headline||'').replace(/\*/g,''))}${sc.funcao?` <span class="hint">· ${esc2(sc.funcao)}</span>`:''}${sc.motion_locked?' <span class="hint">· ajustado à mão</span>':''}</h4>
+      ${sc.direction?`<p class="dir">${esc2(sc.direction)}</p>`:''}<div class="mgrid">${sel}</div>${chips?`<div class="chips">${chips}</div>`:''}
+      <div class="mact"><button class="btn sm" type="button" data-roll="${i}" title="Sorteia outra variação só desta cena (sem IA)">🎲 Sortear esta cena</button><button class="btn sm" type="button" data-redir="${i}" title="A IA pensa esta cena de novo, com 3 ideias novas">Repensar com a IA</button></div></div>`;
+  }).join('');
+}
+async function putMotion(i,m){
+  const st=JSON.parse(JSON.stringify(P.story));st.scenes[i].motion=m;st.scenes[i].motion_locked=true;
+  setSt('#st2','Aplicando motion…');
+  try{show(await api(`/api/projects/${P.id}/story`,jsonOpt('PUT',st)))}catch(e){setSt('#st2',e.message,true)}
+}
+$('#mList').addEventListener('change',e=>{const t=e.target;if(!t.dataset.k)return;const i=+t.dataset.i;putMotion(i,{...(P.story.scenes[i].motion||{}),[t.dataset.k]:t.value})});
+$('#mList').addEventListener('click',async e=>{const t=e.target.closest('button');if(!t||!P)return;
+  if(t.dataset.idea!=null){const i=+t.dataset.i;putMotion(i,{...P.story.scenes[i].ideas[+t.dataset.idea]});return}
+  const roll=t.dataset.roll,redir=t.dataset.redir;if(roll==null&&redir==null)return;
+  t.disabled=true;setSt('#st2',roll!=null?'Sorteando a cena…':'A IA está repensando a cena…');
+  try{show(await api(`/api/projects/${P.id}/scenes/${roll??redir}/${roll!=null?'reroll':'redirect'}`,{method:'POST'}))}catch(err){setSt('#st2',err.message,true);t.disabled=false}});
+const seedBody=()=>$('#seedLock').checked&&+$('#seedIn').value>0?jsonOpt('POST',{seed:+$('#seedIn').value}):{method:'POST'};
+async function patch(o){try{setSt('#st2',o.narration||o.voice?'Atualizando (gerando narração)…':'Atualizando…');show(await api(`/api/projects/${P.id}/options`,jsonOpt('PATCH',o)))}catch(e){setSt('#st2',e.message,true)}}
+
+$('#f').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!$('#logo').files.length&&!P){setSt('#st','Escolha o arquivo do logo.',true);return}
+  if($('#pitch').value.trim().length<20){setSt('#st','Escreva o pitch.',true);return}
+  const fd=new FormData();
+  ['name','tagline','cta','style','pitch','duration','font','pack','music'].forEach(k=>fd.append(k,$('#'+k).value));
+  fd.append('theme',$('#theme').value);fd.append('skin',$('#skin').value);fd.append('deco',$('#deco').value);
+  fd.append('logo_intro',$('#logoIn').value);fd.append('logo_outro',$('#logoOut').value);fd.append('logo_fix',$('#logoFix').value);
+  fd.append('format',fmt);fd.append('accent',accentValue());fd.append('progress',$('#progress').checked);fd.append('model',$('#model').value);
+  fd.append('narration',$('#narration').checked);fd.append('voice_id',$('#voice').value);fd.append('sfx',$('#sfx').checked);
+  if($('#logo').files.length)fd.append('logo',$('#logo').files[0]);else fd.append('logo_from',P.id);[...$('#refs').files].slice(0,5).forEach(f=>fd.append('refs',f));[...$('#assetsIn').files].slice(0,12).forEach(f=>fd.append('assets',f));
+  $('#go').disabled=true;const t0=Date.now();
+  const tick=setInterval(()=>setSt('#st',`A IA está escrevendo o roteiro${$('#narration').checked?' e a narração':''}… ${Math.round((Date.now()-t0)/1000)}s`),1000);
+  try{const p=await api('/api/projects',{method:'POST',body:fd});show(p);
+    if(+$('#musicVol').value!==.25)await patch({music_volume:+$('#musicVol').value});setSt('#st','Pronto. Projeto salvo (menu Projetos).')}
+  catch(err){setSt('#st',err.message,true)}
+  finally{clearInterval(tick);$('#go').disabled=false}
+});
+$('#reload').onclick=()=>P&&show(P);
+$('#regen').onclick=async()=>{if(!P)return;$('#regen').disabled=true;setSt('#st2','Gerando outro roteiro…');try{show(await api(`/api/projects/${P.id}/regenerate`,seedBody()))}catch(e){setSt('#st2',e.message,true)}$('#regen').disabled=false};
+$('#remotion').onclick=async()=>{if(!P)return;$('#remotion').disabled=true;setSt('#st2','A IA está dirigindo cada cena de novo…');try{show(await api(`/api/projects/${P.id}/remotion`,seedBody()))}catch(e){setSt('#st2',e.message,true)}$('#remotion').disabled=false};
+$('#apply').onclick=async()=>{let s;try{s=JSON.parse($('#storyEd').value)}catch(e){setSt('#st2','JSON inválido: '+e.message,true);return}
+  setSt('#st2','Aplicando roteiro…');
+  try{show(await api(`/api/projects/${P.id}/story`,jsonOpt('PUT',s)))}catch(e){setSt('#st2',e.message,true)}};
+['#duration','#font','#progress','#accentMode','#accentPick'].forEach(s=>$(s).addEventListener('change',()=>{if(!P)return;
+  patch({duration:$('#duration').value,font:$('#font').value||null,progress:$('#progress').checked,accent:accentValue()||null})}));
+['#logoIn','#logoOut'].forEach(s=>$(s).addEventListener('change',()=>P&&patch({logo_intro:$('#logoIn').value||null,logo_outro:$('#logoOut').value||null})));
+$('#theme').addEventListener('change',()=>P&&patch({theme:$('#theme').value}));
+$('#skin').addEventListener('change',()=>P&&patch({skin:$('#skin').value||null}));
+$('#deco').addEventListener('change',()=>P&&patch({deco:$('#deco').value||null}));
+$('#logoFix').addEventListener('change',()=>P&&patch({logo_fix:$('#logoFix').value}));
+$('#narration').addEventListener('change',()=>P&&patch({narration:$('#narration').checked,voice:$('#voice').dataset.sel||P.options.voice||null}));
+$('#voice').addEventListener('change',()=>{const v=$('#voice').value;$('#voice').dataset.sel=v;if(P)patch({voice:v||null})});
+$('#voicePlay').onclick=async()=>{const b=$('#voicePlay'),v=$('#voice').value;b.disabled=true;const t0=Date.now();
+  const tick=setInterval(()=>b.textContent=`Gerando… ${Math.round((Date.now()-t0)/1000)}s`,1000);
+  try{const r=await fetch('/api/voices/preview',jsonOpt('POST',{voice:v}));if(!r.ok){let j=null;try{j=await r.json()}catch{}throw new Error((j&&j.detail)||'Erro '+r.status)}
+    const a=$('#voiceAudio');a.src=URL.createObjectURL(await r.blob());a.play()}
+  catch(e){setSt(P?'#st2':'#st',e.message,true)}finally{clearInterval(tick);b.textContent='▶ Ouvir';b.disabled=false}};
+
+// gravação da voz para clonar (MediaRecorder do navegador)
+let REC=null,recBlob=null;
+$('#recBtn').onclick=async()=>{
+  if(REC&&REC.state==='recording'){REC.stop();return}
+  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    const chunks=[];REC=new MediaRecorder(st);const t0=Date.now();
+    REC.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+    const tick=setInterval(()=>{const s=(Date.now()-t0)/1000;$('#recTime').textContent=`${s.toFixed(0)}s${s<10?' (grave pelo menos 10s)':''}`;if(s>=30)REC.stop()},250);
+    REC.onstop=()=>{clearInterval(tick);st.getTracks().forEach(t=>t.stop());$('#recBox').classList.remove('on');$('#recBtn').textContent='● Gravar de novo';
+      recBlob=new Blob(chunks,{type:REC.mimeType||'audio/webm'});const a=$('#recAudio');a.src=URL.createObjectURL(recBlob);a.hidden=false;$('#recSave').hidden=false};
+    REC.start();$('#recBox').classList.add('on');$('#recBtn').textContent='■ Parar';$('#recSave').hidden=true;$('#recAudio').hidden=true;setSt('#cloneSt','')}
+  catch(e){setSt('#cloneSt','Não consegui usar o microfone: '+e.message,true)}};
+async function sendClone(blob,fname,text){
+  const fd=new FormData();fd.append('name',$('#cloneName').value.trim()||'Minha voz');fd.append('text',text||'');fd.append('file',blob,fname);
+  setSt('#cloneSt','Processando a voz…');
+  try{const c=await api('/api/voices/clone',{method:'POST',body:fd});setSt('#cloneSt',`Voz "${c.name}" salva (${c.dur}s). Escolha-a na lista de narração.`);
+    $('#cloneName').value='';$('#cloneText').value='';$('#cloneFile').value='';$('#recSave').hidden=true;await loadVoices()}
+  catch(e){setSt('#cloneSt',e.message,true)}}
+$('#recSave').onclick=()=>recBlob&&sendClone(recBlob,'gravacao.webm',$('#cloneRead').textContent.trim());
+$('#cloneUp').onclick=()=>{const f=$('#cloneFile').files[0];if(!f){setSt('#cloneSt','Escolha um arquivo de áudio.',true);return}sendClone(f,f.name,$('#cloneText').value.trim())};
+$('#cloneList').addEventListener('click',async e=>{const b=e.target.closest('[data-del]');if(!b)return;
+  try{await api('/api/voices/clone/'+b.dataset.del,{method:'DELETE'});await loadVoices()}catch(err){setSt('#cloneSt',err.message,true)}});
+$('#music').addEventListener('change',()=>P&&patch({music:$('#music').value||null}));
+$('#musicVol').addEventListener('change',()=>P&&patch({music_volume:+$('#musicVol').value}));
+$('#sfx').addEventListener('change',()=>P&&patch({sfx:$('#sfx').checked}));
+
+// Enviar música/efeito para a biblioteca local
+let libKind='music';
+$('#upMusic').onclick=()=>{libKind='music';$('#libFile').click()};
+$('#upSfx').onclick=()=>{libKind='sfx';$('#libFile').click()};
+$('#libFile').addEventListener('change',async()=>{const f=$('#libFile').files[0];if(!f)return;const fd=new FormData();fd.append('file',f);
+  const st=P?'#st2':'#st';
+  try{await api('/api/library/'+libKind,{method:'POST',body:fd});await loadConfig();
+    if(libKind==='music'){$('#music').value=f.name;if(P)await patch({music:f.name})}
+    setSt(st,`${f.name} adicionado à biblioteca.`)}catch(e){setSt(st,e.message,true)}$('#libFile').value=''});
+
+$('#render').onclick=async()=>{
+  if(!P)return;const vf=$('#vfmt').value;$('#render').disabled=true;$('#rprog').style.display='block';
+  try{
+    let j=await api(`/api/projects/${P.id}/render`,jsonOpt('POST',{fps:+$('#fps').value,format:vf}));
+    while(j.status==='running'){await new Promise(r=>setTimeout(r,1000));j=await api(`/api/jobs/${j.id}`);
+      if(j.total){$('#rprog i').style.width=(100*j.done/j.total)+'%';setSt('#st2',`Renderizando ${vf.toUpperCase()}: quadro ${j.done} de ${j.total}…`)}}
+    if(j.status==='error')throw new Error(j.error);
+    P=await api(`/api/projects/${P.id}`);setSt('#st2',`${vf.toUpperCase()} pronto.`);$('#dl').innerHTML=videoLinks(P);
+  }catch(e){setSt('#st2',e.message,true)}
+  finally{$('#render').disabled=false;$('#rprog').style.display='none';$('#rprog i').style.width='0'}
+};
+
+// Diálogos: projetos
+document.querySelectorAll('dialog [data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+async function openProject(id){
+  try{const p=await api('/api/projects/'+id);fillForm(p);show(p);if($('#dlgProjects').open)$('#dlgProjects').close()}
+  catch(e){setSt('#st',e.message,true);history.replaceState(null,'',location.pathname)}}
+async function listProjects(){
+  const ul=$('#plist');ul.innerHTML='<li>Carregando…</li>';
+  const list=await api('/api/projects');
+  if(!list.length){ul.innerHTML='<li class="hint">Nenhum projeto ainda.</li>';return}
+  ul.innerHTML=list.map(p=>`<li><img src="/api/projects/${p.id}/logo" alt=""><div class="pi"><b>${esc(p.name)}</b>
+    <span>${esc(p.headline)}</span><span>${new Date((p.updated||0)*1000).toLocaleString('pt-BR')} · ${p.scenes} cenas · ${(p.duration||0).toFixed(0)}s · ${p.format==='portrait'?'9:16':'16:9'}${p.narrated?' · narrado':''}${p.videos.length?' · '+p.videos.join('/').toUpperCase():''}</span></div>
+    <button class="btn sm" type="button" data-open="${p.id}">Abrir</button><a class="btn sm" href="/api/projects/${p.id}/export" download>.zip</a><button class="btn sm danger" type="button" data-del="${p.id}" aria-label="Apagar ${esc(p.name)}">Apagar</button></li>`).join('');
+}
+$('#plist').addEventListener('click',async e=>{const o=e.target.closest('[data-open]'),d=e.target.closest('[data-del]');
+  if(o)openProject(o.dataset.open);
+  if(d&&confirm('Apagar este projeto? Isso não pode ser desfeito.')){await api('/api/projects/'+d.dataset.del,{method:'DELETE'});if(P&&P.id===d.dataset.del)newProject(false);listProjects()}});
+$('#openProjects').onclick=()=>{$('#dlgProjects').showModal();listProjects()};
+function newProject(close=true){P=null;delete $('#voice').dataset.sel;history.replaceState(null,'',location.pathname);$('#f').reset();$('#logoThumb').innerHTML='';$('#refThumbs').innerHTML='';$('#assetThumbs').innerHTML='';
+  $('#logoTxt').textContent=$('#logoTxt').dataset.t;$('#tb').hidden=true;$('#det').hidden=true;$('#detPlan').hidden=true;setSt('#st2','');setSt('#st','');
+  fmt='landscape';$('#fmtSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.v===fmt));
+  $('#sw').style.aspectRatio='16/9';$('#sw').style.width='100%';
+  $('#sw').innerHTML='<div class="empty">O preview aparece aqui depois de gerar.</div>';fillMusic(CFG?CFG.music:[],CFG&&CFG.music[0]||'');if(close)$('#dlgProjects').close()}
+$('#newProject').onclick=()=>{newProject();openWizard()};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').addEventListener('change',async()=>{const f=$('#importFile').files[0];if(!f)return;const fd=new FormData();fd.append('file',f);
+  try{const p=await api('/api/projects/import',{method:'POST',body:fd});fillForm(p);show(p);$('#dlgProjects').close()}catch(e){$('#plist').insertAdjacentHTML('afterbegin',`<li class="status err">${esc(e.message)}</li>`)}$('#importFile').value=''});
+
+// Diálogo: configurações
+$('#openSettings').onclick=async()=>{
+  const s=await api('/api/settings');
+  for(const k of ['ELEVENLABS_API_KEY','PEXELS_API_KEY','PIXABAY_API_KEY']){$('#'+k).value='';$('#'+k).placeholder=s[k].set?'configurada (deixe em branco para manter)':'não configurada'}
+  $('#ELEVENLABS_MODEL').value=s.ELEVENLABS_MODEL.value||'eleven_multilingual_v2';
+  $('#TTS_ENGINE').value=/^eleven/.test(s.TTS_ENGINE.value||'')?'elevenlabs':'kitten';$('#ELEVENLABS_ENABLED').checked=!/^(0|false|off)?$/i.test(String(s.ELEVENLABS_ENABLED.value??'1'));$('#KITTEN_PRESET').value=s.KITTEN_PRESET.value||'';
+  setSt('#setSt','');setSt('#cloneSt','');$('#dlgSettings').showModal();await loadVoices();$('#KITTEN_VOICE').value=s.KITTEN_VOICE.value||'';
+};
+$('#setForm').addEventListener('submit',async e=>{e.preventDefault();const body={};
+  for(const k of ['ELEVENLABS_API_KEY','PEXELS_API_KEY','PIXABAY_API_KEY'])if($('#'+k).value.trim())body[k]=$('#'+k).value.trim();
+  body.ELEVENLABS_VOICE_ID=$('#ELEVENLABS_VOICE_ID').value;body.ELEVENLABS_MODEL=$('#ELEVENLABS_MODEL').value;
+  body.TTS_ENGINE=$('#TTS_ENGINE').value;body.ELEVENLABS_ENABLED=$('#ELEVENLABS_ENABLED').checked?'1':'0';body.KITTEN_VOICE=$('#KITTEN_VOICE').value;body.KITTEN_PRESET=$('#KITTEN_PRESET').value;
+  try{await api('/api/settings',jsonOpt('PUT',body));await loadConfig();setSt('#setSt','Salvo.')}catch(err){setSt('#setSt',err.message,true)}});
+
+
+// ---------- Onboarding passo a passo ----------
+const W_STEPS=['Categoria','Marca','Conteúdo','Fotos','Estilo','Formato','Revisão'];
+const WZ={step:0,cat:null,assets:[],assetInfo:[],style:null,styleFiles:[],fmt:'portrait',busyA:false,busyS:false};
+const TIPOS=['fachada','lazer','piscina','interior','planta','vista','paisagem','pessoas','produto','tela_app','equipe','comida','ambiente','detalhe','mapa','logo','outro'];
+const iconURL=(name,color)=>name?`https://api.iconify.design/${name.replace(':','/')}.svg?color=${encodeURIComponent(color||'#ff6a1a')}`:'';
+function wCat(){return (CFG&&CFG.categories||[]).find(c=>c.id===WZ.cat)}
+function wRenderSteps(){$('#wsteps').innerHTML=W_STEPS.map((s,i)=>`<li class="${i===WZ.step?'on':i<WZ.step?'done':''}">${i+1}. ${s}</li>`).join('')}
+function wShow(i){
+  WZ.step=i;document.querySelectorAll('#wiz .wstep').forEach(s=>s.hidden=+s.dataset.step!==i);wRenderSteps();
+  $('#wBack').style.visibility=i?'visible':'hidden';$('#wNext').textContent=i===W_STEPS.length-1?'Gerar motion':'Continuar';setSt('#wSt','');
+  if(i===2)wRenderQs();if(i===3)wRenderAssetHint();if(i===6)wRenderReview();
+  $('#wiz .wbody').scrollTop=0;
+}
+function wRenderCats(){
+  $('#wcats').innerHTML=(CFG.categories||[]).map(c=>`<button type="button" class="wcat${c.id===WZ.cat?' on':''}" data-cat="${c.id}">
+    <img src="${iconURL(c.icon)}" alt="" width="40" height="40" onerror="this.remove()"><b>${esc(c.name)}</b><span>${esc(c.description)}</span></button>`).join('');
+}
+$('#wcats').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;WZ.cat=b.dataset.cat;wRenderCats();
+  const st=(wCat()||{}).style||{};$('#wTheme').value=st.theme||'auto';$('#wSkin').value=st.skin||'';$('#wFont').value=st.font||'';$('#wDeco').value=st.deco||'';
+  ['#wTheme','#wSkin','#wFont','#wDeco'].forEach(id=>$(id).dataset.auto='1');  // padrão da categoria: as referências de estilo podem trocar
+  setTimeout(()=>wShow(1),120)});
+function wRenderQs(){
+  const qs=((wCat()||{}).onboarding||{}).questions||[];const prev={};document.querySelectorAll('#wQs input').forEach(i=>prev[i.dataset.q]=i.value);
+  $('#wQs').innerHTML=qs.map(q=>`<label for="wq_${q.id}">${esc(q.label)}</label><input type="text" id="wq_${q.id}" data-q="${q.id}" placeholder="${esc(q.ph||'')}" value="${esc(prev[q.id]||'')}">`).join('');
+}
+function wRenderAssetHint(){
+  const ob=(wCat()||{}).onboarding||{};const a=ob.assets||{};
+  $('#wAssetHint').textContent=a.hint||'Fotos do produto, do espaço ou do serviço.';
+  const have=new Set(WZ.assetInfo.map(x=>(x.titulo||'').toLowerCase()+' '+(x.tipo||'')));
+  $('#wSlots').innerHTML=(a.slots||[]).map(s=>`<span class="wslot">${esc(s)}</span>`).join('');
+}
+function wRenderAssets(){
+  $('#wAssetList').innerHTML=WZ.assets.map((f,i)=>{const t=WZ.assetInfo[i]||{};return `<div class="wasset">
+    <img src="${URL.createObjectURL(f)}" alt="">
+    <div class="wainfo">${WZ.busyA&&!WZ.assetInfo[i]?'<span class="hint">a IA está olhando…</span>':`
+      <select data-i="${i}" data-k="tipo" aria-label="Tipo da foto">${TIPOS.map(x=>`<option${x===t.tipo?' selected':''}>${x}</option>`).join('')}</select>
+      <input type="text" data-i="${i}" data-k="titulo" value="${esc(t.titulo||'')}" placeholder="Título curto" aria-label="Título da foto">
+      <span class="hint">${esc(t.descricao||'')}</span>`}</div>
+    <button type="button" class="btn sm danger" data-rm="${i}" aria-label="Remover foto">×</button></div>`}).join('');
+}
+$('#wAssetList').addEventListener('input',e=>{const i=e.target.dataset.i;if(i==null)return;(WZ.assetInfo[i]=WZ.assetInfo[i]||{})[e.target.dataset.k]=e.target.value});
+$('#wAssetList').addEventListener('click',e=>{const r=e.target.closest('[data-rm]');if(!r)return;const i=+r.dataset.rm;WZ.assets.splice(i,1);WZ.assetInfo.splice(i,1);wRenderAssets()});
+async function wAddAssets(files){
+  const add=[...files].filter(f=>f.type.startsWith('image/')).slice(0,12-WZ.assets.length);if(!add.length)return;
+  const start=WZ.assets.length;WZ.assets.push(...add);WZ.busyA=true;wRenderAssets();setSt('#wSt','A IA está identificando as fotos…');
+  try{const fd=new FormData();fd.append('category',WZ.cat||'');add.forEach(f=>fd.append('files',f));
+    const r=await api('/api/analyze/assets',{method:'POST',body:fd});r.items.forEach((it,k)=>WZ.assetInfo[start+k]=it);setSt('#wSt','')}
+  catch(e){add.forEach((_,k)=>WZ.assetInfo[start+k]=WZ.assetInfo[start+k]||{tipo:'outro'});setSt('#wSt','Não consegui analisar as fotos ('+e.message+'). Você pode preencher os títulos.',true)}
+  WZ.busyA=false;wRenderAssets();
+}
+async function wAddStyle(files){
+  WZ.styleFiles=[...files].filter(f=>f.type.startsWith('image/')).slice(0,5);
+  $('#wStyleThumbs').innerHTML=WZ.styleFiles.map(f=>`<img src="${URL.createObjectURL(f)}" alt="">`).join('');
+  if(!WZ.styleFiles.length){WZ.style=null;$('#wBrief').hidden=true;return}
+  WZ.busyS=true;$('#wBrief').hidden=false;$('#wBrief').innerHTML='<span class="hint">A IA está lendo o estilo das referências…</span>';
+  try{const fd=new FormData();WZ.styleFiles.forEach(f=>fd.append('files',f));const s=WZ.style=await api('/api/analyze/style',{method:'POST',body:fd});
+    $('#wBrief').innerHTML=`<b>O que a IA entendeu</b><p>${esc(s.resumo||'')}</p><div>${(s.palette||[]).map(c=>`<i class="sw" style="background:${c}" title="${c}"></i>`).join('')}
+      ${(s.elements||[]).map(x=>`<span class="wslot">${esc(x)}</span>`).join('')}</div>`;
+    for(const [id,v] of [['#wTheme',s.theme],['#wSkin',s.skin],['#wFont',s.font],['#wDeco',s.deco]])
+      if(v&&($(id).dataset.auto==='1'||!$(id).value||$(id).value==='auto'))$(id).value=v;}
+  catch(e){WZ.style=null;$('#wBrief').innerHTML=`<span class="status err">Não consegui ler as referências: ${esc(e.message)}</span>`}
+  WZ.busyS=false;
+}
+function wDrop(drop,input,fn){drop.addEventListener('click',()=>input.click());drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click()}});
+  drop.addEventListener('dragover',e=>e.preventDefault());drop.addEventListener('drop',e=>{e.preventDefault();fn(e.dataTransfer.files)});input.addEventListener('change',()=>{fn(input.files);input.value=''})}
+wDrop($('#wAssetDrop'),$('#wAssets'),wAddAssets);
+wDrop($('#wStyleDrop'),$('#wStyle'),wAddStyle);
+let wLogoFile=null;
+wDrop($('#wLogoDrop'),$('#wLogo'),fs=>{wLogoFile=fs[0]||null;$('#wLogoThumb').innerHTML=wLogoFile?`<img src="${URL.createObjectURL(wLogoFile)}" alt="">`:'';$('#wLogoTxt').textContent=wLogoFile?wLogoFile.name:'Clique ou arraste o logo'});
+segBind($('#wFmt'),v=>WZ.fmt=v);
+['#wTheme','#wSkin','#wFont','#wDeco'].forEach(id=>$(id).addEventListener('change',()=>delete $(id).dataset.auto));  // escolha manual sempre vale
+function wAnswers(){const a={};document.querySelectorAll('#wQs input').forEach(i=>{if(i.value.trim())a[i.dataset.q]=i.value.trim()});return a}
+function wRenderReview(){
+  const c=wCat()||{},a=wAnswers();
+  $('#wReview').innerHTML=`<dl>
+    <dt>Categoria</dt><dd>${esc(c.name||'')}</dd><dt>Marca</dt><dd>${esc($('#wName').value)}${wLogoFile?' · logo ok':' · <b class="warn">sem logo</b>'}</dd>
+    <dt>Briefing</dt><dd>${Object.keys(a).length} resposta(s) · pitch com ${$('#wPitch').value.trim().split(/\s+/).filter(Boolean).length} palavras</dd>
+    <dt>Fotos</dt><dd>${WZ.assets.length} foto(s): ${WZ.assetInfo.map(x=>esc(x.titulo||x.tipo||'')).filter(Boolean).join(', ')||'nenhuma'}</dd>
+    <dt>Estilo</dt><dd>${WZ.styleFiles.length} referência(s) · fundo ${$('#wTheme').selectedOptions[0].text.toLowerCase()} · ${$('#wSkin').selectedOptions[0].text.toLowerCase()}</dd>
+    <dt>Formato</dt><dd>${WZ.fmt==='portrait'?'9:16':'16:9'} · ${$('#wDur').selectedOptions[0].text}${$('#wNarr').checked?' · narrado':''}</dd></dl>`;
+}
+function wValidate(i){
+  if(i===0&&!WZ.cat)return 'Escolha uma categoria.';
+  if(i===1&&!wLogoFile)return 'Envie o logo.';
+  if(i===2&&$('#wPitch').value.trim().length<20)return 'Escreva um pouco mais sobre o produto (pelo menos uma frase completa).';
+  if(i===3&&WZ.busyA)return 'Espere a IA terminar de olhar as fotos.';
+  if(i===4&&WZ.busyS)return 'Espere a IA terminar de ler as referências.';
+  return '';
+}
+$('#wBack').onclick=()=>wShow(Math.max(0,WZ.step-1));
+$('#wNext').onclick=async()=>{
+  const err=wValidate(WZ.step);if(err){setSt('#wSt',err,true);return}
+  if(WZ.step<W_STEPS.length-1){wShow(WZ.step+1);return}
+  const fd=new FormData();
+  fd.append('pack',WZ.cat);fd.append('name',$('#wName').value);fd.append('tagline',$('#wTag').value);fd.append('cta',$('#wCta').value);
+  fd.append('pitch',$('#wPitch').value);fd.append('style',$('#wNote').value);fd.append('answers',JSON.stringify(wAnswers()));
+  fd.append('format',WZ.fmt);fd.append('duration',$('#wDur').value);fd.append('narration',$('#wNarr').checked);fd.append('voice_id',$('#voice').dataset.sel||'');fd.append('music',$('#wMusic').value);
+  fd.append('theme',$('#wTheme').value);fd.append('skin',$('#wSkin').value);fd.append('font',$('#wFont').value);fd.append('deco',$('#wDeco').value);
+  fd.append('logo',wLogoFile);WZ.assets.forEach(f=>fd.append('assets',f));fd.append('asset_info',JSON.stringify(WZ.assetInfo));
+  WZ.styleFiles.forEach(f=>fd.append('refs',f));if(WZ.style)fd.append('style_info',JSON.stringify(WZ.style));
+  $('#wNext').disabled=true;$('#wBack').disabled=true;const t0=Date.now();
+  const tick=setInterval(()=>setSt('#wSt',`A IA está planejando e dirigindo as cenas… ${Math.round((Date.now()-t0)/1000)}s`),1000);
+  try{const p=await api('/api/projects',{method:'POST',body:fd});clearInterval(tick);$('#wiz').close();fillForm(p);show(p);setSt('#st','Pronto. Ajuste aqui ao lado ou gere um novo roteiro.')}
+  catch(e){clearInterval(tick);setSt('#wSt',e.message,true)}
+  finally{$('#wNext').disabled=false;$('#wBack').disabled=false}
+};
+function openWizard(){
+  if(!CFG)return;
+  if($('#wFont').length<=1)CFG.fonts.forEach(f=>$('#wFont').add(new Option(f,f)));
+  const m=$('#wMusic');if(m.length<=1)CFG.music.forEach(n=>m.add(new Option(n,n)));if(CFG.music.length&&!m.value)m.value=CFG.music[0];
+  $('#wNarr').disabled=!CFG.narration;
+  wRenderCats();wShow(WZ.cat?WZ.step:0);$('#wiz').showModal();
+}
+$('#openWizard').onclick=openWizard;
+
+loadConfig().finally(()=>{if(location.hash.length>1)openProject(location.hash.slice(1))});
+</script>
+</body>
+</html>

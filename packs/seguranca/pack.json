@@ -1,0 +1,100 @@
+{
+  "id": "seguranca",
+  "name": "Segurança / Cripto",
+  "description": "Cibersegurança, proteção de agentes de IA, fraudes, cripto, carteiras e compliance.",
+  "keywords": [
+    "segurança",
+    "seguranca",
+    "ataque",
+    "hacker",
+    "fraude",
+    "cripto",
+    "blockchain",
+    "carteira",
+    "wallet",
+    "on-chain",
+    "prompt injection",
+    "malicioso",
+    "proteção",
+    "protecao",
+    "ameaça",
+    "ameaca",
+    "vulnerab",
+    "compliance",
+    "roubado",
+    "transação",
+    "transacao",
+    "agente"
+  ],
+  "font": "grotesk",
+  "particles": "bits",
+  "heroes": {
+    "guarda": {
+      "desc": "Uma transação (pílula) sai de um agente e atravessa barreiras de verificação até a blockchain. Use em 2 a 4 cenas seguidas.",
+      "states": {
+        "fluxo": "agente e blockchain ligados, a transação aparece (title = nome da origem, label = id da transação)",
+        "barreiras": "barreiras surgem e a transação passa por elas (items = nomes das barreiras; comece com ! a barreira que detecta o problema: a transação para nela)",
+        "bloqueio": "carimbo de bloqueio sobre a transação (status = texto do carimbo, reason = motivo curto)",
+        "aprovado": "a transação chega à blockchain (status = texto do carimbo)",
+        "registro": "novo bloco registrado na cadeia (value = hash, label = legenda)"
+      },
+      "fields": "title, label, items, status, reason, value conforme o estado"
+    },
+    "radar": {
+      "desc": "Radar varrendo, ameaças aparecendo e sendo neutralizadas. Bom para monitoramento contínuo.",
+      "states": {
+        "varredura": "radar girando",
+        "ameacas": "ameaças surgem como pontos com nome (items)",
+        "neutralizado": "ameaças riscadas e selo central (status, ex. PROTEGIDO)"
+      },
+      "fields": "items: ameaças; status: selo final"
+    }
+  },
+  "metaphors": [
+    "Mostrar a ameaça acontecendo (chat com instrução injetada) antes de apresentar a solução",
+    "Usar o guarda para explicar a arquitetura e as etapas em sequência, sem trocar de visual",
+    "Momento de impacto com big_word (\"NÃO\", \"PARE\") perto do fim",
+    "Números de prejuízo com counter, sempre com a fonte no note"
+  ],
+  "notes": "Sério e direto, sem sensacionalismo. Prefira verbos de ação (bloquear, verificar, provar). P&B ou uma cor de alerta.",
+  "order": 5,
+  "icon": "solar:shield-keyhole-bold-duotone",
+  "onboarding": {
+    "questions": [
+      {
+        "id": "ameaca",
+        "label": "Que ameaça ou risco combate",
+        "ph": "Ex.: golpes em transações de agentes de IA"
+      },
+      {
+        "id": "como",
+        "label": "Como funciona em poucas etapas",
+        "ph": "Ex.: reputação, filtro de prompt, simulação"
+      },
+      {
+        "id": "publico",
+        "label": "Para quem",
+        "ph": "Ex.: fintechs e exchanges"
+      },
+      {
+        "id": "prova",
+        "label": "Números reais",
+        "ph": "Ex.: US$ 3,4 bi roubados em 2025"
+      }
+    ],
+    "assets": {
+      "hint": "Telas do produto, diagramas ou fotos da equipe.",
+      "slots": [
+        "Tela do produto",
+        "Diagrama"
+      ]
+    },
+    "photo_hint": "data center, pessoas em ambiente de tecnologia, cidade à noite"
+  },
+  "style_defaults": {
+    "theme": "dark",
+    "skin": "clean",
+    "font": "grotesk",
+    "deco": "rings"
+  }
+}
